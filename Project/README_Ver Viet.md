@@ -3,7 +3,7 @@ Trước khi đi vào chi tiết từng bước xử lý dữ liệu hay xây d�
 
 Về cơ bản, pipeline của Toxic Comment Detection hoạt động theo flow như sau:
 <p align="center">
-  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/Collection/6_pipeline.png style="margin: 0 auto; display: block;"><br/>
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/6_pipeline.png style="margin: 0 auto; display: block;"><br/>
   <em>Hình 6. Toxic Comment Detection pipeline </em>
 </p>
 
