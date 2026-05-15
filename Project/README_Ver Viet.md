@@ -1,3 +1,33 @@
+# 1. ToxiGuard AI và bài toán Toxic Comment Detection trong cộng đồng học tập trực tuyến
+
+Khi lớp học dần chuyển lên môi trường trực tuyến, phần bình luận không còn chỉ là nơi đặt câu hỏi hay trao đổi kiến thức. Nó đã trở thành một phần của trải nghiệm học tập số, nơi phản ánh trực tiếp văn hóa giao tiếp của cộng đồng học tập. Tuy nhiên, song song với sự phát triển của các nền tảng học online là sự xuất hiện ngày càng nhiều của các bình luận mang tính công kích, xúc phạm hoặc gây thù ghét. Những nội dung này không chỉ làm giảm chất lượng thảo luận mà còn ảnh hưởng tiêu cực đến tâm lý và động lực học tập của người dùng.
+
+Trong các diễn đàn học tập, chỉ cần một vài bình luận mang tính toxic cũng có thể khiến môi trường trao đổi trở nên căng thẳng và thiếu an toàn. Người học có thể ngại đặt câu hỏi, ngại tham gia thảo luận hoặc thậm chí rời bỏ cộng đồng vì cảm giác bị tấn công hoặc chế giễu. Đối với các nền tảng có số lượng người dùng lớn, việc kiểm duyệt thủ công toàn bộ bình luận gần như không khả thi vì tốn nhiều thời gian và nguồn lực. Điều này đặt ra nhu cầu về các hệ thống có khả năng hỗ trợ phát hiện nội dung độc hại một cách nhanh chóng và tự động hơn.
+
+Từ thực tế đó, nhóm xây dựng ToxiGuard AI như một hệ thống hỗ trợ kiểm duyệt bình luận độc hại trong môi trường học tập trực tuyến. Mục tiêu của hệ thống không phải thay thế hoàn toàn con người trong việc kiểm duyệt, mà đóng vai trò như một lớp hỗ trợ giúp phát hiện sớm các nội dung có nguy cơ gây hại, từ đó giúp quản trị viên phản hồi nhanh và hiệu quả hơn, đồng thời duy trì môi trường học tập tích cực cho người dùng.
+
+Để xây dựng một hệ thống như vậy, bài toán cốt lõi cần giải quyết là Toxic Comment Detection — tức phát hiện các bình luận độc hại bằng trí tuệ nhân tạo. Toxic comment có thể được hiểu là các bình luận mang tính xúc phạm, công kích, đe dọa, thù ghét hoặc gây ảnh hưởng tiêu cực đến người khác trong môi trường trực tuyến. Đây là một bài toán thuộc lĩnh vực Natural Language Processing (NLP), nơi máy tính được huấn luyện để hiểu và phân tích ngôn ngữ con người. Cụ thể hơn, toxic comment detection thường được xem là một bài toán text classification, trong đó mô hình AI sẽ đọc nội dung bình luận và dự đoán xem bình luận đó có chứa yếu tố độc hại hay không.
+
+Tuy nhiên, “độc hại” không phải lúc nào cũng chỉ có một dạng duy nhất. Trong nhiều bộ dữ liệu hiện đại, một bình luận có thể được gán nhiều nhãn khác nhau tùy theo mức độ và kiểu công kích. Trong đó, “toxic” thường được xem là nhãn tổng quát cho các nội dung gây hại hoặc tiêu cực. “Insult” đại diện cho các nội dung mang tính xúc phạm cá nhân, “threat” liên quan đến đe dọa hoặc gây sợ hãi, còn “obscene” dùng để chỉ các bình luận chứa ngôn từ tục tĩu hoặc phản cảm. Ngoài ra, một bình luận hoàn toàn có thể đồng thời thuộc nhiều nhóm nhãn khác nhau. Ví dụ, một câu chứa cả lời lăng mạ lẫn ngôn từ tục tĩu có thể vừa được gán nhãn insult vừa thuộc nhóm obscene.
+
+Ví dụ, câu “You are stupid” có thể được xem là một bình luận mang tính xúc phạm trực tiếp. Trong khi đó, những câu mang tính mỉa mai hoặc công kích gián tiếp như “Wow, what an intelligent answer…” lại khó nhận diện hơn vì ý nghĩa thực sự phụ thuộc vào ngữ cảnh và sắc thái diễn đạt. Đây cũng là lý do vì sao toxic comment detection không đơn thuần là lọc từ cấm, mà cần đến các mô hình học máy có khả năng học được ngữ nghĩa của ngôn ngữ tự nhiên.
+
+Trong bối cảnh giáo dục trực tuyến phát triển mạnh mẽ, việc ứng dụng AI vào kiểm duyệt nội dung không chỉ mang ý nghĩa công nghệ mà còn góp phần xây dựng một môi trường học tập tích cực, an toàn và tôn trọng lẫn nhau. ToxiGuard AI được phát triển với định hướng đó: hỗ trợ cộng đồng học tập duy trì chất lượng giao tiếp mà không làm gián đoạn trải nghiệm trao đổi kiến thức của người dùng.
+
+# 2. Vì sao bài toán Toxic Comment Detection khó?
+
+Mặc dù toxic comment detection là một trong những bài toán phổ biến trong NLP hiện nay, việc xây dựng một hệ thống có khả năng nhận diện chính xác bình luận độc hại trên thực tế lại không hề đơn giản. Nguyên nhân đến từ chính sự phức tạp của ngôn ngữ tự nhiên và cách con người giao tiếp trên môi trường trực tuyến.
+
+Khó khăn đầu tiên nằm ở tính đa nghĩa của ngôn ngữ. Một câu nói có thể mang ý nghĩa hoàn toàn khác nhau tùy vào ngữ cảnh sử dụng. Ví dụ, một số từ ngữ tưởng chừng mang tính công kích có thể chỉ là cách nói đùa giữa bạn bè, trong khi những câu nghe có vẻ lịch sự đôi khi lại chứa hàm ý mỉa mai hoặc xúc phạm. Điều này khiến AI khó xác định chính xác đâu là toxic nếu chỉ dựa trên bề mặt câu chữ.
+Ngoài ra, nhiều bình luận độc hại không mang tính tấn công trực tiếp mà được thể hiện dưới dạng sarcasm (mỉa mai), công kích ngầm hoặc thao túng cảm xúc. Con người có thể nhận ra sắc thái này nhờ kinh nghiệm giao tiếp và hiểu ngữ cảnh xã hội, nhưng đối với mô hình AI, đây là một thách thức lớn. Nếu không được huấn luyện đủ tốt, hệ thống có thể bỏ sót các bình luận nguy hiểm hoặc ngược lại gắn nhãn sai cho những bình luận bình thường.
+
+Một vấn đề khác là dữ liệu thường bị mất cân bằng. Trong thực tế, số lượng bình luận bình thường luôn nhiều hơn rất nhiều so với bình luận toxic. Điều này khiến mô hình dễ học theo xu hướng “đa số” và ưu tiên dự đoán non-toxic để đạt accuracy cao. Tuy nhiên, một hệ thống kiểm duyệt hiệu quả không thể chỉ dựa vào accuracy, vì điều quan trọng hơn là khả năng phát hiện đúng các nội dung nguy hiểm.
+Bên cạnh đó, toxic comment detection còn là bài toán multi-label classification. Một bình luận có thể đồng thời thuộc nhiều nhóm nhãn khác nhau. Ví dụ, một câu chứa lời lăng mạ và từ ngữ tục tĩu có thể vừa được gán nhãn insult vừa thuộc nhóm obscene. Điều này khiến mô hình phải học cách nhận diện nhiều sắc thái độc hại cùng lúc thay vì chỉ phân loại đơn giản thành “toxic” hoặc “non-toxic”.
+
+Ngôn ngữ trên Internet cũng thay đổi liên tục. Người dùng thường viết tắt, cố tình sai chính tả hoặc sử dụng ký tự đặc biệt để né hệ thống kiểm duyệt. Ví dụ, các từ ngữ xúc phạm có thể được biến đổi thành nhiều dạng khác nhau như “i.d.i.o.t”, “1d10t” hoặc thay thế bằng emoji và meme. Nếu hệ thống không được cập nhật thường xuyên, khả năng nhận diện sẽ giảm đáng kể theo thời gian.
+
+Chính vì những lý do đó, toxic comment detection không chỉ là bài toán kỹ thuật đơn thuần mà còn liên quan đến ngôn ngữ học, hành vi người dùng và bối cảnh giao tiếp xã hội. Một mô hình AI tốt không phải là mô hình “xóa sạch” mọi bình luận tiêu cực, mà là mô hình có khả năng hỗ trợ con người đưa ra quyết định kiểm duyệt chính xác và công bằng hơn.
+
 # 4. Giới thiệu bộ dữ liệu
 
 Môi trường học tập trực tuyến chỉ thực sự hiệu quả khi người học cảm thấy an toàn và được tôn trọng. Tuy nhiên, việc kiểm duyệt thủ công hàng ngàn thảo luận mỗi ngày là thử thách quá lớn đối với các nền tảng giáo dục. Để giải quyết bài toán này, chúng tôi đã lựa chọn bộ dữ liệu Jigsaw Toxic Comment Classification làm nền tảng huấn luyện cho ứng dụng phát hiện bình luận độc hại của cả nhóm.
@@ -129,3 +159,17 @@ Trong project này:
 Ở bước cuối cùng, model sẽ trả về xác suất cho từng nhãn độc hại.
 
 Dựa trên threshold được thiết lập, hệ thống sẽ quyết định comment thuộc những nhãn nào.
+
+# Tài Liệu Tham Khảo
+
+Jigsaw Toxic Comment Classification Challenge
+
+Natural Language Processing Specialization – DeepLearning.AI
+
+DeepLearning.AI. (n.d.). Natural Language Processing Specialization. Coursera. https://www.deeplearning.ai/courses/natural-language-processing-specialization/
+
+Kaggle. (2018). Jigsaw Toxic Comment Classification Challenge. https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge
+
+Jurafsky, D., & Martin, J. H. (2023). Speech and Language Processing (3rd ed. draft). Stanford University. https://web.stanford.edu/~jurafsky/slp3/
+
+Schmidt, A., & Wiegand, M. (2017). A survey on hate speech detection using natural language processing. Proceedings of the Fifth International Workshop on Natural Language Processing for Social Media, 1–10.
