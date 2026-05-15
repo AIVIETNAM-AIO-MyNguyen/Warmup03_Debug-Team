@@ -54,7 +54,7 @@ Sự phân bố không đồng đều này chỉ ra rằng phần lớn hành vi
 ## 5.3. Đặc điểm độ dài của các bình luận
 
 <p align="center">
-  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_2_label_distribution.png style="margin: 0 auto; display: block;"><br/>
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_3_comment_length_distribution.png style="margin: 0 auto; display: block;"><br/>
   <em>Hình 5.3. Phân phối độ dài bình luận (Giới hạn dưới 400 từ) </em>
 </p>
 
@@ -65,7 +65,7 @@ Biểu đồ phân phối mật độ (Histogram) về độ dài ký tự và s
 ## 5.4. Mối quan hệ tương quan giữa các nhãn
 
 <p align="center">
-  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_2_label_distribution.png style="margin: 0 auto; display: block;"><br/>
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_4_labels_correlation_heatmap.png style="margin: 0 auto; display: block;"><br/>
   <em>Hình 5.4. Biểu đồ ma trận tương quan giữa 6 nhãn độc hại </em>
 </p>
 
