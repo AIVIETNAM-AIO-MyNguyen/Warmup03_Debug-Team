@@ -160,6 +160,33 @@ Trong project này:
 
 Dựa trên threshold được thiết lập, hệ thống sẽ quyết định comment thuộc những nhãn nào.
 
+# Phần 11: Hạn chế của AI và Vấn đề Đạo đức
+
+Mặc dù ToxiGuard AI cho thấy kết quả khả quan trong việc phân loại bình luận, chúng ta cần nhìn nhận thực tế rằng không có mô hình học máy nào là hoàn hảo. Khi áp dụng AI vào việc kiểm duyệt nội dung, đặc biệt là trong môi trường giáo dục, có những hạn chế và vấn đề đạo đức quan trọng cần được xem xét kỹ lưỡng:
+
+- **Thiếu khả năng hiểu ngữ cảnh sâu sắc:** Mô hình hiện tại chủ yếu phân tích dựa trên từ vựng và cấu trúc câu (thông qua TF-IDF). Nó gặp khó khăn trong việc nắm bắt toàn bộ ngữ cảnh của cuộc hội thoại. Một từ ngữ có thể mang tính chất xúc phạm trong bối cảnh này, nhưng lại là từ lóng đùa giỡn giữa những người bạn trong bối cảnh khác.
+- **Vấn đề thiên kiến (Bias):** Mô hình AI học từ dữ liệu chúng ta cung cấp. Nếu bộ dữ liệu huấn luyện (như Jigsaw dataset) chứa đựng những thiên kiến ngầm (ví dụ: thường xuyên gán nhãn "độc hại" cho các bình luận chứa một số từ khóa nhất định thuộc về một nhóm người yếu thế), mô hình sẽ có xu hướng "học" và lặp lại những thiên kiến đó, dẫn đến việc kiểm duyệt không công bằng.
+- **Điểm mù với sự châm biếm (Sarcasm):** Nhận diện sự mỉa mai, châm biếm là một trong những thử thách khó nhất của Xử lý Ngôn ngữ Tự nhiên. Một bình luận với lời lẽ lịch sự nhưng mang hàm ý công kích sâu cay rất dễ "qua mặt" hệ thống.
+- **Sự cần thiết của "Human-in-the-loop" (Sự can thiệp của con người):** Vì những hạn chế trên, một nguyên tắc quan trọng về đạo đức AI là không bao giờ để hệ thống tự động xóa bỏ hoàn toàn bình luận chỉ dựa trên phán đoán của thuật toán. ToxiGuard AI được thiết kế như một công cụ hỗ trợ (assisting tool) để gắn cờ (flag) cảnh báo mức độ rủi ro, giúp người quản trị (moderators/giáo viên) tiết kiệm thời gian lọc nội dung. Quyết định cuối cùng về việc ẩn, xóa bình luận hay nhắc nhở học viên vẫn cần sự can thiệp và đánh giá của con người để đảm bảo tính công bằng và tôn trọng quyền tự do ngôn luận.
+
+# Phần 12: Tổng kết và Hướng phát triển tương lai
+
+Dự án ToxiGuard AI đã chứng minh khả năng áp dụng các kỹ thuật Xử lý Ngôn ngữ Tự nhiên (NLP) và Học máy cơ bản để giải quyết bài toán phức tạp: Phân loại nhiều nhãn (Multi-label Classification) cho các bình luận độc hại. Từ việc làm sạch dữ liệu, trích xuất đặc trưng bằng TF-IDF, cho đến việc xây dựng mô hình Logistic Regression với chiến lược One-vs-Rest, chúng ta đã có một hệ thống nền tảng hoạt động hiệu quả.
+
+**Giá trị mang lại:**
+
+- **Về mặt học thuật:** Dự án là một quy trình hoàn chỉnh minh họa cách tiếp cận bài toán Text Classification từ đầu đến cuối, giúp củng cố kiến thức về tiền xử lý văn bản, lựa chọn mô hình và các chỉ số đánh giá.
+- **Về mặt thực tiễn:** ToxiGuard AI mở ra tiềm năng ứng dụng thực tế trong việc làm sạch không gian học tập trực tuyến, tạo ra một môi trường an toàn, văn minh hơn để học viên tự do trao đổi kiến thức mà không lo ngại về bạo lực mạng.
+
+**Hướng phát triển tương lai:**
+
+Để ToxiGuard AI trở nên mạnh mẽ và hữu ích hơn trong thực tế, nhóm dự án đề xuất các hướng phát triển tiếp theo:
+
+- **Hỗ trợ tiếng Việt:** Bước tiến quan trọng nhất là thu thập và xây dựng bộ dữ liệu bình luận tiếng Việt để huấn luyện mô hình, giúp ToxiGuard AI ứng dụng trực tiếp được vào cộng đồng học tập tại Việt Nam.
+- **Ứng dụng các mô hình Deep Learning tiên tiến:** Chuyển đổi từ các mô hình truyền thống (Logistic Regression) sang các mô hình ngôn ngữ lớn mạnh mẽ hơn như BERT (hoặc PhoBERT cho tiếng Việt) để cải thiện đáng kể khả năng hiểu ngữ cảnh và nhận diện độ châm biếm.
+- **Hệ thống phản hồi từ người dùng (Human Feedback):** Xây dựng cơ chế cho phép người quản trị sửa lỗi dự đoán của AI. Mô hình sẽ liên tục học hỏi từ những sửa đổi này (Active Learning) để ngày càng chính xác hơn.
+- **Tích hợp trực tiếp vào Hệ thống Quản lý Học tập (LMS):** Phát triển API hoặc Plugin để cắm trực tiếp ToxiGuard AI vào các nền tảng học trực tuyến như Moodle, Canvas, hay các diễn đàn học tập, tự động quét và cảnh báo bình luận theo thời gian thực.
+
 # Tài Liệu Tham Khảo
 
 Jigsaw Toxic Comment Classification Challenge
