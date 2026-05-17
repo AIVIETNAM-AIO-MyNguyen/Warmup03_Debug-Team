@@ -180,6 +180,172 @@ Trong project này:
 
 Dựa trên threshold được thiết lập, hệ thống sẽ quyết định comment thuộc những nhãn nào.
 
+# 7. Tiền xử lý văn bản và Vectorization
+
+Trong các bài toán NLP, dữ liệu text thường không thể đưa trực tiếp vào mô hình machine learning hay deep learning. Với bài toán toxic comment detection, comment ngoài thực tế thường chứa rất nhiều ký tự nhiễu, viết tắt hoặc cách diễn đạt không chuẩn.
+
+Vì vậy trước khi huấn luyện model, nhóm mình thực hiện hai bước quan trọng:
+
+- **Text Preprocessing**
+- **Vectorization**
+
+Hai bước này giúp chuyển đổi dữ liệu từ ngôn ngữ tự nhiên sang dạng số để AI có thể hiểu và xử lý hiệu quả hơn.
+
+## 7.1 Preprocessing
+
+**Vì sao cần preprocessing?**
+
+Dữ liệu comment trên internet thường không đồng nhất và chứa khá nhiều nhiễu. Người dùng có thể:
+
+- Viết hoa toàn bộ câu
+- Spam ký tự hoặc lặp chữ liên tục
+- Chèn username, link hoặc địa chỉ IP
+- Dùng từ viết tắt như "you're", "can't"
+- Viết sai chính tả hoặc không đúng ngữ pháp
+
+Những yếu tố này khiến dữ liệu trở nên khó xử lý hơn đối với mô hình machine learning. Nếu giữ nguyên dữ liệu gốc, model rất dễ học phải các pattern không thực sự mang ý nghĩa, từ đó làm giảm khả năng tổng quát hóa trên dữ liệu mới.
+
+Vì vậy, trước khi vector hóa, mình xây dựng một hàm clean() để chuẩn hóa comment về cùng một định dạng, giúp dữ liệu sạch và nhất quán hơn cho quá trình huấn luyện.
+
+**Các bước preprocessing được sử dụng**
+
+***Chuyển text về lowercase***
+
+Đầu tiên, toàn bộ comment được chuyển về chữ thường:
+
+```python
+comment = comment.lower()
+```
+
+Điều này giúp "HATE" và "hate" được xem là cùng một từ thay vì hai token khác nhau.
+
+***Loại bỏ ký tự xuống dòng***
+```python
+comment = re.sub("\\n"," ",comment)
+```
+
+Một số comment chứa ký tự xuống dòng \n, có thể làm dữ liệu bị phân mảnh không cần thiết. Vì vậy nhóm mình thay chúng bằng khoảng trắng.
+
+***Xóa địa chỉ IP và pattern dư thừa***
+
+```python
+comment=re.sub("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"," ",comment)
+```
+
+Một số comment có thể chứa IP address hoặc các pattern không liên quan đến nội dung toxic. Những dữ liệu này thường không mang nhiều ý nghĩa về mặt cảm xúc nên được loại bỏ để giảm nhiễu.
+
+***Xóa username***
+
+```python
+comment=re.sub("\[\[.*\]"," ",comment)
+```
+
+Tên người dùng thường không giúp ích cho việc xác định toxic behavior. Nếu giữ lại, model có thể học nhầm vào username thay vì nội dung comment thực sự.
+
+***Chuẩn hóa từ viết tắt***
+
+```python
+words=[APPO[word] if word in APPO else word for word in words]
+```
+
+Nhiều comment sử dụng dạng viết tắt như:
+
+"you're" → "you are"
+"can't" → "can not"
+
+Việc chuẩn hóa giúp model hiểu dữ liệu đồng nhất hơn.
+
+***Loại bỏ stopwords***
+
+```python
+words = [w for w in words if not w in eng_stopwords]
+```
+
+Các từ như "the", "is", "and" xuất hiện rất thường xuyên nhưng không mang nhiều giá trị phân loại, nên được loại bỏ để model tập trung vào những từ quan trọng hơn.
+
+
+## 7.2 Vectorization
+
+***Vì sao cần vectorization?***
+
+Sau bước preprocessing, dữ liệu vẫn đang ở dạng text. Tuy nhiên machine learning model không thể hiểu trực tiếp ngôn ngữ tự nhiên.
+
+Vì vậy cần chuyển comment sang dạng vector số trước khi đưa vào mô hình học máy.
+
+Trong bài toán này, mình sử dụng kỹ thuật TF-IDF Vectorization.
+
+<p align="center">
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/7_1_tfidf.png style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 5.1. Tỷ lệ bình luận độc hại và lành mạnh</em>
+</p>
+
+**TF-IDF hoạt động như thế nào?**
+
+Ý tưởng của TF-IDF khá trực quan:
+
+Một từ xuất hiện nhiều trong một comment sẽ quan trọng hơn
+
+Nhưng nếu từ đó xuất hiện ở gần như mọi comment thì mức độ quan trọng sẽ giảm xuống
+
+Ví dụ:
+
+Các từ như:
+
+- "the"
+- "is"
+- "you"
+
+xuất hiện rất phổ biến nên không giúp phân biệt toxic hay non-toxic.
+
+Ngược lại, những từ như:
+
+- "idiot"
+- "trash"
+- "hate"
+
+thường mang nhiều tín hiệu toxic hơn nên sẽ có trọng số cao hơn.
+
+
+TF-IDF giúp mô hình tập trung vào những từ mang tính phân biệt thay vì chỉ đếm tần suất xuất hiện đơn thuần.
+
+Trong project này, mình sử dụng TfidfVectorizer như sau:
+
+```python
+vec = TfidfVectorizer(
+    ngram_range=(1,2),
+    min_df=3,
+    max_df=0.9,
+    strip_accents='unicode',
+    use_idf=True,
+    smooth_idf=True,
+    sublinear_tf=True
+)
+```
+
+Một số tham số đáng chú ý:
+
+- ngram_range=(1,2)
+Sử dụng cả unigram và bigram để model có thể học các cụm từ như "stupid idiot" thay vì chỉ từng từ riêng lẻ.
+- min_df=3
+Loại bỏ những từ xuất hiện quá ít để giảm nhiễu.
+- max_df=0.9
+Loại bỏ những từ xuất hiện quá phổ biến trong dataset.
+- sublinear_tf=True
+Giảm ảnh hưởng của những từ lặp lại quá nhiều trong cùng một comment.
+
+Chuyển dữ liệu thành vector
+
+Sau khi fit TF-IDF trên tập train:
+
+```python
+trn_term_doc = vec.fit_transform(train['clean_comment'])
+test_term_doc = vec.transform(test['clean_comment'])
+```
+
+Mỗi comment sẽ được biểu diễn thành một vector số với nhiều đặc trưng khác nhau.
+
+Đây chính là dữ liệu đầu vào cho các mô hình machine learning ở bước tiếp theo.
+
 # Phần 11: Hạn chế của AI và Vấn đề Đạo đức
 
 Mặc dù ToxiGuard AI cho thấy kết quả khả quan trong việc phân loại bình luận, chúng ta cần nhìn nhận thực tế rằng không có mô hình học máy nào là hoàn hảo. Khi áp dụng AI vào việc kiểm duyệt nội dung, đặc biệt là trong môi trường giáo dục, có những hạn chế và vấn đề đạo đức quan trọng cần được xem xét kỹ lưỡng:
