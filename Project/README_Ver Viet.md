@@ -276,7 +276,7 @@ Trong bài toán này, mình sử dụng kỹ thuật TF-IDF Vectorization.
 
 <p align="center">
   <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/7_1_tfidf.png style="margin: 0 auto; display: block;"><br/>
-  <em>Hình 5.1. Tỷ lệ bình luận độc hại và lành mạnh</em>
+  <em>Hình 7.1 TF-IDF</em>
 </p>
 
 **TF-IDF hoạt động như thế nào?**
