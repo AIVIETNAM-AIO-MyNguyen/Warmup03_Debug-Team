@@ -862,3 +862,5 @@ Kaggle. (2018). Jigsaw Toxic Comment Classification Challenge. https://www.kaggl
 Jurafsky, D., & Martin, J. H. (2023). Speech and Language Processing (3rd ed. draft). Stanford University. https://web.stanford.edu/~jurafsky/slp3/
 
 Schmidt, A., & Wiegand, M. (2017). A survey on hate speech detection using natural language processing. Proceedings of the Fifth International Workshop on Natural Language Processing for Social Media, 1–10.
+
+Wang, S., & Manning, C. D. (2012). Baselines and Bigrams: Simple, Good Sentiment and Topic Classification. Stanford University. Retrieved from https://nlp.stanford.edu/pubs/sidaw12_simple_sentiment.pdf
