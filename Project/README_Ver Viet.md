@@ -848,6 +848,7 @@ Dự án ToxiGuard AI đã chứng minh khả năng áp dụng các kỹ thuật
 - **Hệ thống phản hồi từ người dùng (Human Feedback):** Xây dựng cơ chế cho phép người quản trị sửa lỗi dự đoán của AI. Mô hình sẽ liên tục học hỏi từ những sửa đổi này (Active Learning) để ngày càng chính xác hơn.
 - **Tích hợp trực tiếp vào Hệ thống Quản lý Học tập (LMS):** Phát triển API hoặc Plugin để cắm trực tiếp ToxiGuard AI vào các nền tảng học trực tuyến như Moodle, Canvas, hay các diễn đàn học tập, tự động quét và cảnh báo bình luận theo thời gian thực.
 
+Mọi người có thể thử trực tiếp mô hình Toxic Comment Detection thông qua bản demo tại [Hugging Face](https://huggingface.co/spaces/cauhamau/toxic-comment-classifier).
 # Tài Liệu Tham Khảo
 
 Jigsaw Toxic Comment Classification Challenge
