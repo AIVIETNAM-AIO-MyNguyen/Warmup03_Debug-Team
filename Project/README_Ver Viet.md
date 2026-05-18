@@ -346,18 +346,46 @@ Mỗi comment sẽ được biểu diễn thành một vector số với nhiều
 
 Đây chính là dữ liệu đầu vào cho các mô hình machine learning ở bước tiếp theo.
 
-# 8. Xây dựng mô hình
+# 7. Xây dựng mô hình
 Phần này phân tích quá trình xây dựng mô hình cơ sở (baseline model) và mô hình chính (main model). Với mô hình cơ sở, mô hình Naive Bayes cùng với TF-IDF được lựa chọn, với mô hình chính, ta sử dụng mô hình Logistic Regression.
 
-## 8.1. Naive Bayes
+## 7.1. Naive Bayes
+Naive Bayes là một thuật toán phân lớp được mô hình hoá dựa trên định lý Bayes trong xác suất thống kê. Thuật toán giả định rằng các đặc trưng (feature) được xem là độc lập với nhau khi đã biết nhãn (label).
 
-## 8.2. Logistic Regression
+Mô hình Naive Bayes có ưu điểm là thời gian huấn luyện (training) và dự đoán (testing) rất nhanh, đồng thời hoạt động hiệu quả ngay cả với các bộ dữ liệu lớn. Naive Bayes được sử dụng rộng rãi trong nhiều lĩnh vực như: lọc thư rác, phân tích cảm xúc, phân loại bài viết và nhiều ứng dụng khác.
 
-## 8.3. One vs Rest Classifier
+## 7.2. Logistic Regression
+Logistic Regression là thuật toán học máy có giám sát được dùng chủ yếu trong bài toán phân loại nhị phân có kết quả đầu ra là đúng/sai, có/không hoặc spam/không spam. Thuật toán tính toán xác xuất một điểm dữ liệu thuộc về một lớp thông qua hàm sigmoid.
 
-## 8.4. Xây dựng mô hình
+Sau khi tính toán xác xuất một dữ liệu thuộc về một lớp, mô hình so sánh với một ngưỡng định sẵn, nếu giá trị xác suất vượt ngưỡng cho phép, mô hình phân loại input đó là class 1, ngược lại là class 0.
 
-### 8.4.1. Mô hình cơ sở
+Trong bài toán phân loại bình luận toxic, với bản chất là phân loại đa lớp, mô hình logistic regression có thể hoạt động hiệu quả nhờ khả năng dự đoán được xác suất một bình luận thuộc về lớp nào. Tuy nhiên, để mô hình có thể phân loại một bình luận thuộc nhiều lớp khác nhau, ta cần phương pháp One vs Rest.
+
+## 7.3. One vs Rest Classifier
+One-vs-rest là phương pháp chia bài toán phân loại đa lớp thành các bài toán phân loại nhị phân, trong đó, mỗi bài toán phân loại nhị phân sẽ phân loại 1 class nhất định với tất cả class còn lại.
+
+Ví dụ: xét bài toán phân loại 3 lớp [‘đỏ‘, ‘xanh‘, ‘xanh lá‘], bằng phương pháp One vs Rest, ta sẽ đưa bài toán này thành 3 bài toán phân loại nhị phân độc lập với nhau, cụ thể:
+
+- Binary Classification 1: đỏ và [xanh, xanh lá]
+- Binary Classification 2: xanh và [đỏ, xanh lá]
+- Binary Classification 3: xanh lá và [đỏ, xanh]
+
+Khi cần phân loại một dữ liệu mới, tất cả các mô hình sẽ đưa ra điểm số (xác suất). Mô hình nào cho ra xác suất tự tin cao nhất thì nhãn của mô hình đó sẽ được chọn làm kết quả cuối cùng. Nhược điểm của phương pháp này chính là yêu cầu một mô hình được tạo cho mỗi lớp, do đó nếu bài toán có số lượng lớp khổng lồ, phương pháp này có thể làm chậm quá trình huấn luyện.
+
+## 7.4. ROC - AUC
+ROC - AUC là một thước đo quan trọng trong Machine Learning dùng để đánh giá hiệu suất của các mô hình phân loại nhị phân. Chỉ số này thể hiện khả năng phân loại chính xác của mô hình ở nhiều ngưỡng xác suất khác nhau. ROC - AUC gồm hai thành phần chính:
+
+**ROC
+(Receiver Operating Characteristic):** mô tả cách mô hình phân loại nhị phân phản ứng khi thay đổi ngưỡng phân loại. Nó so sánh hai đại lượng trên nhiều ngưỡng:
+
+- TPR (True Positive Rate): tỷ lệ phát hiện đúng lớp dương.
+- FPR (False Positive Rate): tỷ lệ mô hình dự đoán nhầm lớp âm thành dương.
+
+Khi thay đổi ngưỡng, TPR và FPR sẽ thay đổi theo, tạo thành một đường cong ROC. Đường cong không đánh giá mô hình tại một điểm cụ thể, mà nhìn vào toàn bộ hành vi khi quét qua mọi ngưỡng.
+
+## 7.5. Xây dựng mô hình
+
+### 7.5.1. Mô hình cơ sở
 Như đã đề cập ở các phần trước, ta sử dụng Naive Bayes cho mô hình cơ sở (baseline model). Với mô hình cơ sở, ta sẽ xử lí dữ liệu ở mức độ cơ bản như:
 
 - Loại bỏ các dữ liệu trống
@@ -549,7 +577,7 @@ Với nhãn severe_toxic, identity_hate, threat:
 - Bộ dữ liệu có tính mất cân bằng lớn, phần lớn bình luận đều là non-toxic, khi đó chỉ số accuracy cao (ví dụ: 0.97) chỉ phản ánh rằng mô hình dự đoán hầu hết các bình luận là non-toxic, nhưng không thể dự đoán được bình luận mang tình chất toxic nào.
 - Để việc đánh giá mô hình hiệu quả hơn, ta nên sử dụng các metric khác như precision, recall, f1-score, ROC AUC
 
-### 8.4.2. Mô hình chính
+### 7.5.2. Mô hình chính
 Như đã đề cập ở phần trước, để huấn luyện một mô hình có kết quả tốt hơn, ta tiến hành tiền xử lí dữ liệu và sử dụng Logistic Regression.
 
 ```python
@@ -791,11 +819,19 @@ macro_f1 = np.mean(f1_scores)
 print("-" * 25)
 print(f"Macro F1 Score : {macro_f1:.4f}\n")
 ```
+Với hướng tiếp cận mới, ta có thể thấy mô hình cho ra kết quả tốt hơn so với mô hình cơ sở: 
 
-Với hướng tiếp cận mới, ta có thể thấy mô hình cho ra kết quả tốt hơn so với mô hình cơ sở. Trừ nhãn toxic, F1 score cải thiện đáng kể cho 5 nhãn còn lại. Bên cạnh F1 score, ta sẽ dùng thêm ROC AUC để đánh giá hiệu suất mô hình:
+| Label          | F1 score (Baseline model) | F1 score (Main model) |
+| :------:       | :------: | :------: |
+| toxic          | 0.6824	  | 0.6804   |
+| severe_toxic   | 0.3725   | 0.3707   |
+| obscene        | 0.6598   | 0.6864   |
+| threat         | 0.1264   | 0.3167   |
+| insult         | 0.5900   | 0.6204   |
+| identity_hate  | 0.2349   | 0.4720   |
+| Macro F1 score | 0.4443   | 0.5244   |
 
-**(phần này giải thích về ROC AUC)**
-
+Với các nhãn ít dữ liệu như threat và identity_hate, kết quả có sự cải thiện đáng kể, điều đó cho thấy bước xử lí dữ liệu đạt hiệu quả tốt. Ngoài ra, Macro F1 score cũng được cải thiện. Ta tiến hành tính chỉ số ROC - AUC:
 ```python
 print("=== ROC AUC Evaluation ===")
 auc_scores = []
@@ -808,18 +844,26 @@ mean_auc = np.mean(auc_scores)
 print("-" * 25)
 print(f"Mean ROC AUC   : {mean_auc:.4f}")
 ```
+```python
+=== ROC AUC Evaluation ===
+toxic          : 0.9646
+severe_toxic   : 0.9829
+obscene        : 0.9744
+threat         : 0.9854
+insult         : 0.9666
+identity_hate  : 0.9753
+-------------------------
+Mean ROC AUC   : 0.9749
+```
 
-Kết quả ROC AUC:
-| Label        | Value    |
-| :------:     | :------: |
-| toxic        | 0.9646   |
-| severe_toxic | 0.9829   |
-| obscene      | 0.9744   |
-| threat       | 0.9854   |
-| insult       | 0.9666   |
-| identity_hate| 0.9753   |
-| Mean ROC AUC | 0.9749   |
+Điểm ROC - AUC cho các nhãn đều tiệm cận 1, Mean ROC AUC là 0.9749, điều đó cho thấy mô hình hiện tại có khả năng phân loại tốt các nhãn.
 
+Từ kết quả training ta có thể kết luận rằng, thông qua bước xử lí dữ liệu tổng thể và chi tiết:
+- Chuẩn hóa kí tự, chuyển đổi các từ về dạng viết thường
+- Mở rộng các dạng rút gọn của ngôn ngữ tiếng Anh
+- Loại bỏ kí tự nhiễu, các tên miền và địa chỉ web
+
+Cùng với việc sử dụng thuật toán Naive Bayes weighting để tăng trọng số cho các token theo nhãn trước khi huấn luyện với mô hình Logistic Regression, ta đạt được kết quả tốt hơn so với mô hình cơ sở với mean ROC AUC là **0.9749**, điều đó phản ánh khả năng phân loại nhãn của mô hình ở mức tốt, có thể phân loại bình luận thuộc các nhãn khác nhau.
 
 # Phần 11: Hạn chế của AI và Vấn đề Đạo đức
 
