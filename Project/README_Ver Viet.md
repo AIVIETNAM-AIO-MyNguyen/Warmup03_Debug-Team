@@ -384,7 +384,7 @@ Ví dụ: xét bài toán phân loại 3 lớp [‘đỏ‘, ‘xanh‘, ‘xanh
 
 Khi cần phân loại một dữ liệu mới, tất cả các mô hình sẽ đưa ra điểm số (xác suất). Mô hình nào cho ra xác suất tự tin cao nhất thì nhãn của mô hình đó sẽ được chọn làm kết quả cuối cùng. Nhược điểm của phương pháp này chính là yêu cầu một mô hình được tạo cho mỗi lớp, do đó nếu bài toán có số lượng lớp khổng lồ, phương pháp này có thể làm chậm quá trình huấn luyện.
 
-## 7.4. ROC - AUC
+## 7.4. PR - AUC
 PR - AUC là một thước đo quan trọng trong Machine Learning dùng để đánh giá hiệu suất của các mô hình phân loại nhị phân và phân loại đa lớp, phổ biến ứng dụng cho các bài toán có dữ liệu mất cân bằng. Chỉ số này thể hiện khả năng phân loại các lớp của mô hình. chính xác của mô hình ở nhiều ngưỡng xác suất khác nhau. ROC - AUC gồm hai thành phần chính:
 
 **PR
