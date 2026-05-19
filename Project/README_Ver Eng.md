@@ -93,7 +93,7 @@ Identifying and removing these can help the model avoid overfitting and increase
 Figure 5.5. Frequency distribution chart of noise information
 </p>
 
-# 6. Overall Pipeline of the ToxiGuard AI System
+# 5. Overall Pipeline of the ToxiGuard AI System
 
 Before diving into the details of data processing and model building, we first look at the entire system as a complete pipeline. This helps visualize how a comment moves through different stages before producing the final prediction.
 
@@ -101,10 +101,10 @@ In general, the Toxic Comment Detection pipeline works as follows:
 
 <p align="center">
   <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/6_pipeline.png style="margin: 0 auto; display: block;"><br/>
-  <em>Figure 6. Toxic Comment Detection pipeline </em>
+  <em>Figure 5. Toxic Comment Detection pipeline </em>
 </p>
 
-## 6.1 Input Data
+## 5.1 Input Data
 
 The first step is collecting comment data from the Jigsaw Toxic Comment Classification Challenge dataset.
 
@@ -119,7 +119,7 @@ Each row in the dataset contains a comment along with labels such as:
 
 One important characteristic of this problem is that a single comment can belong to multiple labels at the same time. For example, a comment may contain both insulting and hateful content. Therefore, this is not a standard classification problem but a multi-label classification task.
 
-## 6.2 Text Preprocessing
+## 5.2 Text Preprocessing
 
 Real-world text data, especially online comments, is usually very messy. Users may write entirely in uppercase, spam special characters, use abbreviations, or write in informal ways. Feeding raw comments directly into the model usually leads to poor prediction performance.
 
@@ -133,13 +133,13 @@ Therefore, before training, we perform preprocessing steps to clean the data, in
 
 This step helps the model focus on meaningful content instead of being distracted by unnecessary noise.
 
-## 6.3 Vectorization
+## 5.3 Vectorization
 
 In this project, we use TF-IDF Vectorization to represent each comment as a numerical vector based on the importance of words in the dataset.
 
 Words that appear frequently across almost every comment receive lower weights, while offensive or toxic-related words usually receive higher weights.
 
-## 6.4 Classification Model
+## 5.4 Classification Model
 
 After vectorization, the data is fed into machine learning models to learn patterns related to toxic behavior.
 
@@ -152,7 +152,7 @@ In the final step, the model outputs probability scores for each toxic label.
 
 Based on predefined thresholds, the system determines which labels are assigned to the comment.
 
-# 7. Text Preprocessing and Vectorization
+# 6. Text Preprocessing and Vectorization
 
 In NLP tasks, text data usually cannot be fed directly into machine learning or deep learning models. In toxic comment detection, comments often contain noisy characters, abbreviations, or informal writing styles.
 
@@ -163,7 +163,7 @@ Therefore, before training the model, we performed two important steps:
 
 These steps help transform natural language data into numerical representations so the AI model can understand and process the text more effectively.
 
-## 7.1 Preprocessing
+## 6.1 Preprocessing
 
 **Why is preprocessing necessary?**
 
@@ -250,7 +250,7 @@ This helps reduce unnecessary features while preserving the original meaning of 
 
 ---
 
-## 7.2 Vectorization
+## 6.2 Vectorization
 
 ***Why is vectorization necessary?***
 
@@ -262,7 +262,7 @@ In this project, we used the TF-IDF Vectorization technique.
 
 <p align="center">
   <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/7_1_tfidf.png style="margin: 0 auto; display: block;"><br/>
-  <em>Figure 7.1 TF-IDF</em>
+  <em>Figure 6.1 TF-IDF</em>
 </p>
 
 **How does TF-IDF work?**
