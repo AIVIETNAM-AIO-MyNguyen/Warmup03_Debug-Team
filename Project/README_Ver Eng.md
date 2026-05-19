@@ -873,3 +873,19 @@ From the training results, it can be concluded that comprehensive preprocessing 
 - Removing noisy characters, domains, and URLs
 
 Combined with Naive Bayes weighting to strengthen token importance before training Logistic Regression, the proposed approach achieved substantially better results than the baseline model. This demonstrates that the model can effectively classify comments into multiple toxic categories. However, due to the highly imbalanced nature of the dataset, the model still cannot achieve optimal performance across all labels. In addition, labels that heavily depend on conversational context remain difficult to classify accurately. This limitation should be considered for future improvements.
+
+# REFERENCES
+
+Jigsaw Toxic Comment Classification Challenge
+
+Natural Language Processing Specialization – DeepLearning.AI
+
+DeepLearning.AI. (n.d.). Natural Language Processing Specialization. Coursera. https://www.deeplearning.ai/courses/natural-language-processing-specialization/
+
+Kaggle. (2018). Jigsaw Toxic Comment Classification Challenge. https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge
+
+Jurafsky, D., & Martin, J. H. (2023). Speech and Language Processing (3rd ed. draft). Stanford University. https://web.stanford.edu/~jurafsky/slp3/
+
+Schmidt, A., & Wiegand, M. (2017). A survey on hate speech detection using natural language processing. Proceedings of the Fifth International Workshop on Natural Language Processing for Social Media, 1–10.
+
+Wang, S., & Manning, C. D. (2012). Baselines and Bigrams: Simple, Good Sentiment and Topic Classification. Stanford University. Retrieved from https://nlp.stanford.edu/pubs/sidaw12_simple_sentiment.pdf
