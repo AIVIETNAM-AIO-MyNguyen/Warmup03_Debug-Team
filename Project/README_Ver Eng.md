@@ -190,6 +190,64 @@ Lemmatization converts words back to their root forms:
 This helps reduce unnecessary features while preserving the original meaning of the words.
 
 ---
+# 6. Overall Pipeline of the ToxiGuard AI System
+
+Before diving into the details of data processing and model building, we first look at the entire system as a complete pipeline. This helps visualize how a comment moves through different stages before producing the final prediction.
+
+In general, the Toxic Comment Detection pipeline works as follows:
+
+<p align="center">
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/6_pipeline.png style="margin: 0 auto; display: block;"><br/>
+  <em>Figure 6. Toxic Comment Detection pipeline </em>
+</p>
+
+## 6.1 Input Data
+
+The first step is collecting comment data from the Jigsaw Toxic Comment Classification Challenge dataset.
+
+Each row in the dataset contains a comment along with labels such as:
+
+- toxic
+- severe_toxic
+- obscene
+- threat
+- insult
+- identity_hate
+
+One important characteristic of this problem is that a single comment can belong to multiple labels at the same time. For example, a comment may contain both insulting and hateful content. Therefore, this is not a standard classification problem but a multi-label classification task.
+
+## 6.2 Text Preprocessing
+
+Real-world text data, especially online comments, is usually very messy. Users may write entirely in uppercase, spam special characters, use abbreviations, or write in informal ways. Feeding raw comments directly into the model usually leads to poor prediction performance.
+
+Therefore, before training, we perform preprocessing steps to clean the data, including:
+
+- Converting all text to lowercase
+- Removing special characters
+- Removing non-informative patterns such as URLs, HTML tags, and usernames
+- Tokenizing sentences into individual words
+- Removing stopwords
+
+This step helps the model focus on meaningful content instead of being distracted by unnecessary noise.
+
+## 6.3 Vectorization
+
+In this project, we use TF-IDF Vectorization to represent each comment as a numerical vector based on the importance of words in the dataset.
+
+Words that appear frequently across almost every comment receive lower weights, while offensive or toxic-related words usually receive higher weights.
+
+## 6.4 Classification Model
+
+After vectorization, the data is fed into machine learning models to learn patterns related to toxic behavior.
+
+In this project:
+
+- Naive Bayes is used as the baseline model
+- Logistic Regression is selected as the main model
+
+In the final step, the model outputs probability scores for each toxic label.
+
+Based on predefined thresholds, the system determines which labels are assigned to the comment.
 
 ## 7.2 Vectorization
 
