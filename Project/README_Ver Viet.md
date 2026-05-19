@@ -209,59 +209,73 @@ Vì vậy, trước khi vector hóa, mình xây dựng một hàm clean() để 
 
 **Các bước preprocessing được sử dụng**
 
-***Chuyển text về lowercase***
+***Thay thế các pattern đặc biệt bằng token***
 
-Đầu tiên, toàn bộ comment được chuyển về chữ thường:
-
-```python
-comment = comment.lower()
-```
-
-Điều này giúp "HATE" và "hate" được xem là cùng một từ thay vì hai token khác nhau.
-
-***Loại bỏ ký tự xuống dòng***
-```python
-comment = re.sub("\\n"," ",comment)
-```
-
-Một số comment chứa ký tự xuống dòng \n, có thể làm dữ liệu bị phân mảnh không cần thiết. Vì vậy nhóm mình thay chúng bằng khoảng trắng.
-
-***Xóa địa chỉ IP và pattern dư thừa***
+Thay vì xóa hoàn toàn URL hoặc username, mình thay thế chúng bằng các token đặc biệt để giữ lại một phần ngữ cảnh của câu.
 
 ```python
-comment=re.sub("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"," ",comment)
+text = re.sub(patterns['URL'], ' [URL] ', text)
+text = re.sub(patterns['IP_Address'], ' [IP] ', text)
+text = re.sub(patterns['Email'], " [EMAIL] ", text)
+text = re.sub(patterns['Mention'], ' [USER] ', text)
+text = re.sub(patterns['Hashtag'], ' [HASHTAG] ', text)
 ```
 
-Một số comment có thể chứa IP address hoặc các pattern không liên quan đến nội dung toxic. Những dữ liệu này thường không mang nhiều ý nghĩa về mặt cảm xúc nên được loại bỏ để giảm nhiễu.
+Ví dụ:
 
-***Xóa username***
+"Go to https://example.com now!!!"
+
+sẽ trở thành:
+
+"Go to [URL] now!!!"
+
+***Xóa HTML tag và escape sequence***
+```python
+text = re.sub(patterns['HTML_Tag'], ' ', text)
+text = re.sub(patterns['Escape_Sequence'], ' ', text)
+```
+
+Một số dữ liệu raw chứa HTML hoặc ký tự escape như:
+
+- \r
+- \n
+- \t
+
+Những thành phần này không mang nhiều giá trị semantic nên được loại bỏ để làm sạch dữ liệu.
+
+***Loại bỏ khoảng trắng và dữ liệu dư thừa***
 
 ```python
-comment=re.sub("\[\[.*\]"," ",comment)
+text = re.sub(r'\s+', ' ', text).strip()
 ```
 
-Tên người dùng thường không giúp ích cho việc xác định toxic behavior. Nếu giữ lại, model có thể học nhầm vào username thay vì nội dung comment thực sự.
+Sau nhiều bước cleaning, comment thường xuất hiện nhiều khoảng trắng liên tiếp. Vì vậy mình chuẩn hóa lại spacing để dữ liệu gọn gàng hơn.
 
-***Chuẩn hóa từ viết tắt***
+***Tokenization và Lemmatization***
+
+Sau bước clean text, dữ liệu sẽ được tokenize:
 
 ```python
-words=[APPO[word] if word in APPO else word for word in words]
+tokens = tokenizer.tokenize(text)
 ```
 
-Nhiều comment sử dụng dạng viết tắt như:
+Các từ trong câu sẽ được tách thành các token riêng biệt.
 
-"you're" → "you are"
-"can't" → "can not"
-
-Việc chuẩn hóa giúp model hiểu dữ liệu đồng nhất hơn.
-
-***Loại bỏ stopwords***
+Tiếp theo, mình áp dụng lemmatization:
 
 ```python
-words = [w for w in words if not w in eng_stopwords]
+lemmatized_tokens = [
+    lemmatizer.lemmatize(token)
+    for token in tokens
+]
 ```
 
-Các từ như "the", "is", "and" xuất hiện rất thường xuyên nhưng không mang nhiều giá trị phân loại, nên được loại bỏ để model tập trung vào những từ quan trọng hơn.
+Lemmatization giúp đưa từ về dạng gốc:
+
+"studies" → "study"
+"hating" → "hate"
+
+Điều này giúp giảm số lượng feature không cần thiết nhưng vẫn giữ nguyên ý nghĩa chính của từ.
 
 
 ## 7.2 Vectorization
