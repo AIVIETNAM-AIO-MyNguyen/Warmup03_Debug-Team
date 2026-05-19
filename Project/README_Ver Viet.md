@@ -837,7 +837,7 @@ Từ kết quả training ta có thể kết luận rằng, thông qua bước x
 
 Cùng với việc sử dụng thuật toán Naive Bayes weighting để tăng trọng số cho các token theo nhãn trước khi huấn luyện với mô hình Logistic Regression, ta đạt được kết quả tốt hơn so với mô hình cơ sở, điều đó phản ánh khả năng phân loại nhãn của mô hình ở mức tốt, có thể phân loại bình luận thuộc các nhãn khác nhau. Tuy nhiên, với do bản chất bộ dữ liệu có sự mất cân bằng lớn, mô hình chưa thể phân loại được tối ưu cho tất cả các nhãn, đồng thời với các nhãn cần xét đến ngữ cảnh của cuộc hội thoại, mô hình chưa có khả năng nhận diện chính xác, đây cũng là điểm cần lưu ý để cải thiện trong tương lai. 
 
-# Phần 11: Hạn chế của AI và Vấn đề Đạo đức
+# 8. Hạn chế của AI và Vấn đề Đạo đức
 
 Mặc dù ToxiGuard AI cho thấy kết quả khả quan trong việc phân loại bình luận, chúng ta cần nhìn nhận thực tế rằng không có mô hình học máy nào là hoàn hảo. Khi áp dụng AI vào việc kiểm duyệt nội dung, đặc biệt là trong môi trường giáo dục, có những hạn chế và vấn đề đạo đức quan trọng cần được xem xét kỹ lưỡng:
 
@@ -846,7 +846,7 @@ Mặc dù ToxiGuard AI cho thấy kết quả khả quan trong việc phân lo�
 - **Điểm mù với sự châm biếm (Sarcasm):** Nhận diện sự mỉa mai, châm biếm là một trong những thử thách khó nhất của Xử lý Ngôn ngữ Tự nhiên. Một bình luận với lời lẽ lịch sự nhưng mang hàm ý công kích sâu cay rất dễ "qua mặt" hệ thống.
 - **Sự cần thiết của "Human-in-the-loop" (Sự can thiệp của con người):** Vì những hạn chế trên, một nguyên tắc quan trọng về đạo đức AI là không bao giờ để hệ thống tự động xóa bỏ hoàn toàn bình luận chỉ dựa trên phán đoán của thuật toán. ToxiGuard AI được thiết kế như một công cụ hỗ trợ (assisting tool) để gắn cờ (flag) cảnh báo mức độ rủi ro, giúp người quản trị (moderators/giáo viên) tiết kiệm thời gian lọc nội dung. Quyết định cuối cùng về việc ẩn, xóa bình luận hay nhắc nhở học viên vẫn cần sự can thiệp và đánh giá của con người để đảm bảo tính công bằng và tôn trọng quyền tự do ngôn luận.
 
-# Phần 12: Tổng kết và Hướng phát triển tương lai
+# 9. Tổng kết và Hướng phát triển tương lai
 
 Dự án ToxiGuard AI đã chứng minh khả năng áp dụng các kỹ thuật Xử lý Ngôn ngữ Tự nhiên (NLP) và Học máy cơ bản để giải quyết bài toán phức tạp: Phân loại nhiều nhãn (Multi-label Classification) cho các bình luận độc hại. Từ việc làm sạch dữ liệu, trích xuất đặc trưng bằng TF-IDF, cho đến việc xây dựng mô hình Logistic Regression với chiến lược One-vs-Rest, chúng ta đã có một hệ thống nền tảng hoạt động hiệu quả.
 
