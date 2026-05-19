@@ -28,15 +28,15 @@ Ngôn ngữ trên Internet cũng thay đổi liên tục. Người dùng thườ
 
 Chính vì những lý do đó, toxic comment detection không chỉ là bài toán kỹ thuật đơn thuần mà còn liên quan đến ngôn ngữ học, hành vi người dùng và bối cảnh giao tiếp xã hội. Một mô hình AI tốt không phải là mô hình “xóa sạch” mọi bình luận tiêu cực, mà là mô hình có khả năng hỗ trợ con người đưa ra quyết định kiểm duyệt chính xác và công bằng hơn.
 
-# 4. Giới thiệu bộ dữ liệu
+# 3. Giới thiệu bộ dữ liệu
 
 Môi trường học tập trực tuyến chỉ thực sự hiệu quả khi người học cảm thấy an toàn và được tôn trọng. Tuy nhiên, việc kiểm duyệt thủ công hàng ngàn thảo luận mỗi ngày là thử thách quá lớn đối với các nền tảng giáo dục. Để giải quyết bài toán này, chúng tôi đã lựa chọn bộ dữ liệu Jigsaw Toxic Comment Classification làm nền tảng huấn luyện cho ứng dụng phát hiện bình luận độc hại của cả nhóm.
 
-## 4.1. Tổng quan về bộ dữ liệu
+## 3.1. Tổng quan về bộ dữ liệu
 
 Bộ dữ liệu Jigsaw Toxic Comment Classification Challenge được cung cấp trên nền tảng Kaggle bởi Jigsaw, một công ty con thuộc tập đoàn Alphabet. Bản chất của tập dữ liệu này bao gồm khoảng 159.000 bình luận thực tế được thu thập từ các trang thảo luận của Wikipedia. Và trên hết, các bình luận này đều đã được người dùng gán dãn là độc hại hoặc không độc hại. Mục tiêu cốt lõi của Jigsaw khi công bố kho dữ liệu này là khuyến khích cộng đồng công nghệ xây dựng các mô hình xử lý ngôn ngữ tự nhiên có khả năng nhận diện và phân loại chính xác các sắc thái tiêu cực trong văn bản trực tuyến.
 
-## 4.2. Cấu trúc các cột dữ liệu
+## 3.2. Cấu trúc các cột dữ liệu
 
 Bộ dữ liệu được tổ chức theo dạng bảng, gồm 8 cột. Cột đầu tiên là `id`, đóng vai trò là mã định danh duy nhất cho từng mẫu dữ liệu. Cột quan trọng nhất chính là `comment_text`, chứa toàn bộ nội dung văn bản thô của bình luận cần đưa vào mô hình phân tích. Các cột còn lại bao gồm `toxic`, `severe_toxic`, `obscene`, `threat`, `insult`, và `identity_hate`. Đây là các cột nhãn nhị phân nhận giá trị `0` hoặc `1`, đại diện cho sự vắng mặt hoặc xuất hiện của từng loại hành vi độc hại tương ứng.
 
@@ -49,17 +49,17 @@ Trong đó:
 - **Insult (Xúc phạm):** Nhắm vào các hành vi lăng mạ, bôi nhọ danh dự hoặc hạ bệ uy tín của một cá nhân cụ thể trong cuộc thảo luận.
 - **Identity Hate (Thù ghét danh tính):** Là những lời tấn công, kỳ thị dựa trên các đặc điểm cốt lõi như chủng tộc, tôn giáo, giới tính hoặc xu hướng tính dục.
 
-## 4.3. Lí do chọn bộ dữ liệu
+## 3.3. Lí do chọn bộ dữ liệu
 
 Chúng tôi quyết định tin tưởng bộ dữ liệu này vì nó mang lại độ bao phủ rất cao với 6 sắc thái độc hại được phân tách rõ ràng. Trong môi trường học thuật, học viên không chỉ cần tránh các lời chửi thề thô tục, mà còn cần được bảo vệ khỏi sự xúc phạm cá nhân hay thù ghét danh tính khi tranh luận.
 
 Bên cạnh đó, do dữ liệu được lấy từ Wikipedia nên cấu trúc câu từ có sự tương đồng lớn với môi trường giáo dục, nơi người dùng thường viết các đoạn văn dài để trao đổi kiến thức thay vì chỉ dùng các câu khẩu ngữ ngắn như trên mạng xã hội thông thường. Việc sử dụng một bộ dữ liệu chuẩn hóa toàn cầu như Jigsaw sẽ giúp mô hình đạt được độ chính xác và độ bền vững cao nhất khi triển khai vào thực tế.
 
-# 5. Phân tích Khám phá Dữ liệu (EDA)
+# 4. Phân tích Khám phá Dữ liệu (EDA)
 
 Sau khi hiểu rõ cấu trúc lý thuyết, bước tiếp theo không thể thiếu là trực quan hóa dữ liệu để tìm ra các quy luật ẩn giấu. Việc phân tích này giúp chúng ta định hình chiến lược tiền xử lý dữ liệu và lựa chọn kiến trúc mô hình phù hợp nhất cho ứng dụng.
 
-## 5.1. Tỷ lệ bình luận độc hại và lành mạnh
+## 4.1. Tỷ lệ bình luận độc hại và lành mạnh
 
 <p align="center">
   <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_1_toxic_vs_nontoxic.png style="margin: 0 auto; display: block;"><br/>
@@ -70,7 +70,7 @@ Biểu đồ đầu tiên phản ánh bức tranh toàn cảnh về sự cân b�
 
 Sự mất cân bằng nghiêm trọng này là một đặc tính thực tế của các mạng xã hội nhưng lại là thách thức lớn cho AI. Nếu giữ nguyên tỷ lệ này để huấn luyện, mô hình sẽ có xu hướng đoán mọi bình luận đều là lành mạnh để đạt độ chính xác cao trên lý thuyết. Do đó, chúng ta bắt buộc phải áp dụng các kỹ thuật cân bằng dữ liệu như lấy mẫu lại (sampling) hoặc điều chỉnh trọng số hàm mất mát (loss weight) trong quá trình huấn luyện.
 
-## 5.2. Sự phân bố của sáu nhãn tiêu cực
+## 4.2. Sự phân bố của sáu nhãn tiêu cực
 
 <p align="center">
   <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_2_label_distribution.png style="margin: 0 auto; display: block;"><br/>
@@ -81,7 +81,7 @@ Sự mất cân bằng nghiêm trọng này là một đặc tính thực tế c
 
 Sự phân bố không đồng đều này chỉ ra rằng phần lớn hành vi vi phạm trên không gian mạng dừng lại ở mức độ thô lỗ hoặc xúc phạm lẫn nhau. Đối với ứng dụng học trực tuyến, việc nhãn `insult` xuất hiện nhiều cảnh báo chúng ta cần tập trung cao độ vào việc ngăn chặn hành vi hạ bệ, công kích cá nhân giữa các học viên nhằm bảo vệ không gian tranh luận lành mạnh.
 
-## 5.3. Đặc điểm độ dài của các bình luận
+## 4.3. Đặc điểm độ dài của các bình luận
 
 <p align="center">
   <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_3_comment_length_distribution.png style="margin: 0 auto; display: block;"><br/>
@@ -92,7 +92,7 @@ Biểu đồ phân phối mật độ (Histogram) về độ dài ký tự và s
 
 Đặc điểm này ảnh hưởng trực tiếp đến việc cấu hình tham số `max_length` khi số hóa văn bản (tokenization). Nếu chọn giới hạn quá ngắn, mô hình sẽ cắt bỏ nhiều ngữ cảnh quan trọng của các bài viết dài. Nếu chọn giới hạn quá dài, hệ thống sẽ lãng phí tài nguyên tính toán để xử lý các khoảng trống vô nghĩa (padding tokens) của các bình luận ngắn, làm chậm tốc độ phản hồi của ứng dụng kiểm duyệt thời gian thực.
 
-## 5.4. Mối quan hệ tương quan giữa các nhãn
+## 4.4. Mối quan hệ tương quan giữa các nhãn
 
 <p align="center">
   <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_4_labels_correlation_heatmap.png style="margin: 0 auto; display: block;"><br/>
@@ -103,11 +103,11 @@ Biểu đồ ma trận nhiệt (Heatmap) thể hiện hệ số tương quan Pea
 
 Mối liên hệ hữu cơ này chứng minh rằng một người khi đã sử dụng từ ngữ tục tĩu (obscene) thì tỷ lệ rất cao là họ đang nhằm mục đích lăng mạ (insult) ai đó. Về mặt kỹ thuật, sự tương quan cao giữa các nhãn củng cố quyết định sử dụng mô hình phân loại đa nhãn (Multi-label), cho phép một bình luận kích hoạt đồng thời nhiều nhãn thay vì ép buộc mô hình phải chọn một nhãn duy nhất.
 
-## 5.5. Các thông tin dư thừa
+## 4.5. Các thông tin nhiễu
 
 Bộ dữ liệu Jigsaw Toxic Comment Classification Challenge tổng hợp các bình luận trên Wikipedia nên không thể tránh khỏi việc chúng có thể chứa một số thông tin nhạy cảm, thiên vị hoặc dư thừa. Cụ thể, một số thông tin như địa chỉ IP hay tên người dùng có thể tiết lộ danh tính thật của ai đó; hay các đường dẫn nội bộ của Wikipedia có dạng như `Wikipedia:...`, `Help:...`, `File:...` không có ý nghĩa trong các ngữ cảnh khác ngoại trừ trên Wikipedia; hoặc các URL hay thẻ HTML cũng không mang ý nghĩa cảm xúc hay độc hại, mà chúng chỉ làm tăng từ vựng rác cho mô hình.
 
-Việc nhận diện và loại bỏ chúng có thể sẽ giúp mô hình tránh bị overfitting và tăng độ hiệu quả của quá trình huấn luyện. Sau đây là một số các thông tin nhạy cảm và dưa thừa có trong tập dữ liệu:
+Việc nhận diện và loại bỏ chúng có thể sẽ giúp mô hình tránh bị overfitting và tăng độ hiệu quả của quá trình huấn luyện. Sau đây là một số các thông tin nhiễu có trong tập dữ liệu:
 
 - **Escape Sequence:** các kí tự chỉ mang tính chất định dạng như xuống dòng, tab
 - **Wiki link:** các đường dẫn nội bộ của Wikipedia, chỉ có nghĩa trên Wikipedia
@@ -119,8 +119,8 @@ Việc nhận diện và loại bỏ chúng có thể sẽ giúp mô hình trán
 - **HTML tag:** các thẻ định dạng sử dụng HTML, không có giá trị cảm xúc
 
 <p align="center">
-  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_5_redundant_information_distribution.png style="margin: 0 auto; display: block;"><br/>
-  <em>Hình 5.5. Biểu đồ tần suất xuất hiện của các thông tin nhạy cảm, dư thừa</em>
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_5_noise_information_distribution.png style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 5.5. Biểu đồ tần suất xuất hiện của các thông tin nhiễu</em>
 </p>
 
 # 6. Pipeline tổng thể của hệ thống ToxiGuard AI
