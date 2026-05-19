@@ -123,16 +123,16 @@ Việc nhận diện và loại bỏ chúng có thể sẽ giúp mô hình trán
   <em>Hình 5.5. Biểu đồ tần suất xuất hiện của các thông tin nhiễu</em>
 </p>
 
-# 6. Pipeline tổng thể của hệ thống ToxiGuard AI
+# 5. Pipeline tổng thể của hệ thống ToxiGuard AI
 Trước khi đi vào chi tiết từng bước xử lý dữ liệu hay xây dựng mô hình, mình muốn nhìn toàn bộ hệ thống dưới dạng một pipeline hoàn chỉnh. Điều này giúp dễ hình dung từ một comment sẽ đi qua những bước nào trước khi đưa ra dự đoán cuối cùng.
 
 Về cơ bản, pipeline của Toxic Comment Detection hoạt động theo flow như sau:
 <p align="center">
   <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/6_pipeline.png style="margin: 0 auto; display: block;"><br/>
-  <em>Hình 6. Toxic Comment Detection pipeline </em>
+  <em>Hình 5. Toxic Comment Detection pipeline </em>
 </p>
 
-## 6.1 Dữ liệu đầu vào
+## 5.1 Dữ liệu đầu vào
 
 Bước đầu tiên chính là dữ liệu comment được thu thập từ dataset của cuộc thi Jigsaw Toxic Comment Classification Challenge.
 
@@ -147,7 +147,7 @@ Mỗi dòng dữ liệu chứa một đoạn bình luận và các nhãn tương
 
 Điểm đặc biệt của bài toán này là một comment có thể thuộc nhiều nhãn cùng lúc. Ví dụ một câu vừa mang tính xúc phạm, vừa chứa nội dung thù ghét. Vì vậy đây không phải bài toán phân loại thông thường mà là multi-label classification.
 
-## 6.2 Text Preprocessing
+## 5.2 Text Preprocessing
 
 Dữ liệu text ngoài thực tế đặc biệt là từ comment thường rất lộn xộn. Người dùng có thể viết hoa toàn bộ câu, spam ký tự đặc biệt, viết tắt hoặc dùng ngôn ngữ thiếu chuẩn mực. Nếu đưa trực tiếp vào model thì hiệu quả dự đoán thường không tốt.
 
@@ -161,13 +161,13 @@ Vì vậy trước khi huấn luyện, nhóm mình thực hiện bước preproc
 
 Bước này giúp model tập trung vào phần nội dung mang nhiều ý nghĩa nhất thay vì bị nhiễu bởi các ký tự dư thừa.
 
-## 6.3 Vectorization
+## 5.3 Vectorization
 
 Trong project này, nhóm mình sử dụng TF-IDF Vectorization để biểu diễn mỗi comment dưới dạng vector số dựa trên mức độ quan trọng của từng từ trong tập dữ liệu.
 
 Những từ xuất hiện phổ biến ở hầu hết comment sẽ có trọng số thấp hơn, trong khi các từ mang tính công kích thường sẽ có trọng số cao hơn.
 
-## 6.4 Classification Model
+## 5.4 Classification Model
 
 Sau bước vectorization, dữ liệu sẽ được đưa vào mô hình machine learning để học các pattern liên quan đến toxic behavior.
 
@@ -180,7 +180,7 @@ Trong project này:
 
 Dựa trên threshold được thiết lập, hệ thống sẽ quyết định comment thuộc những nhãn nào.
 
-# 7. Tiền xử lý văn bản và Vectorization
+# 6. Tiền xử lý văn bản và Vectorization
 
 Trong các bài toán NLP, dữ liệu text thường không thể đưa trực tiếp vào mô hình machine learning hay deep learning. Với bài toán toxic comment detection, comment ngoài thực tế thường chứa rất nhiều ký tự nhiễu, viết tắt hoặc cách diễn đạt không chuẩn.
 
@@ -191,7 +191,7 @@ Vì vậy trước khi huấn luyện model, nhóm mình thực hiện hai bư�
 
 Hai bước này giúp chuyển đổi dữ liệu từ ngôn ngữ tự nhiên sang dạng số để AI có thể hiểu và xử lý hiệu quả hơn.
 
-## 7.1 Preprocessing
+## 6.1 Preprocessing
 
 **Vì sao cần preprocessing?**
 
@@ -276,7 +276,7 @@ Lemmatization giúp đưa từ về dạng gốc:
 Điều này giúp giảm số lượng feature không cần thiết nhưng vẫn giữ nguyên ý nghĩa chính của từ.
 
 
-## 7.2 Vectorization
+## 6.2 Vectorization
 
 ***Vì sao cần vectorization?***
 
@@ -288,7 +288,7 @@ Trong bài toán này, mình sử dụng kỹ thuật TF-IDF Vectorization.
 
 <p align="center">
   <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/7_1_tfidf.png style="margin: 0 auto; display: block;"><br/>
-  <em>Hình 7.1 TF-IDF</em>
+  <em>Hình 6.1 TF-IDF</em>
 </p>
 
 **TF-IDF hoạt động như thế nào?**
