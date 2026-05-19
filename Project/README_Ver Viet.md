@@ -180,6 +180,703 @@ Trong project này:
 
 Dựa trên threshold được thiết lập, hệ thống sẽ quyết định comment thuộc những nhãn nào.
 
+# 7. Tiền xử lý văn bản và Vectorization
+
+Trong các bài toán NLP, dữ liệu text thường không thể đưa trực tiếp vào mô hình machine learning hay deep learning. Với bài toán toxic comment detection, comment ngoài thực tế thường chứa rất nhiều ký tự nhiễu, viết tắt hoặc cách diễn đạt không chuẩn.
+
+Vì vậy trước khi huấn luyện model, nhóm mình thực hiện hai bước quan trọng:
+
+- **Text Preprocessing**
+- **Vectorization**
+
+Hai bước này giúp chuyển đổi dữ liệu từ ngôn ngữ tự nhiên sang dạng số để AI có thể hiểu và xử lý hiệu quả hơn.
+
+## 7.1 Preprocessing
+
+**Vì sao cần preprocessing?**
+
+Dữ liệu comment trên internet thường không đồng nhất và chứa khá nhiều nhiễu. Người dùng có thể:
+
+- Spam ký tự hoặc lặp chữ liên tục
+- Chèn username, link hoặc địa chỉ IP
+- Viết sai chính tả hoặc không đúng ngữ pháp
+
+Những yếu tố này khiến dữ liệu trở nên khó xử lý hơn đối với mô hình machine learning. Nếu giữ nguyên dữ liệu gốc, model rất dễ học phải các pattern không thực sự mang ý nghĩa, từ đó làm giảm khả năng tổng quát hóa trên dữ liệu mới.
+
+Vì vậy, trước khi vector hóa, mình xây dựng một hàm clean() để chuẩn hóa comment về cùng một định dạng, giúp dữ liệu sạch và nhất quán hơn cho quá trình huấn luyện.
+
+**Các bước preprocessing được sử dụng**
+
+***Thay thế các pattern đặc biệt bằng token***
+
+Thay vì xóa hoàn toàn URL hoặc username, mình thay thế chúng bằng các token đặc biệt để giữ lại một phần ngữ cảnh của câu.
+
+```python
+text = re.sub(patterns['URL'], ' [URL] ', text)
+text = re.sub(patterns['IP_Address'], ' [IP] ', text)
+text = re.sub(patterns['Email'], " [EMAIL] ", text)
+text = re.sub(patterns['Mention'], ' [USER] ', text)
+text = re.sub(patterns['Hashtag'], ' [HASHTAG] ', text)
+```
+
+Ví dụ:
+
+"Go to https://example.com now!!!"
+
+sẽ trở thành:
+
+"Go to [URL] now!!!"
+
+***Xóa HTML tag và escape sequence***
+```python
+text = re.sub(patterns['HTML_Tag'], ' ', text)
+text = re.sub(patterns['Escape_Sequence'], ' ', text)
+```
+
+Một số dữ liệu raw chứa HTML hoặc ký tự escape như:
+
+- \r
+- \n
+- \t
+
+Những thành phần này không mang nhiều giá trị semantic nên được loại bỏ để làm sạch dữ liệu.
+
+***Loại bỏ khoảng trắng và dữ liệu dư thừa***
+
+```python
+text = re.sub(r'\s+', ' ', text).strip()
+```
+
+Sau nhiều bước cleaning, comment thường xuất hiện nhiều khoảng trắng liên tiếp. Vì vậy mình chuẩn hóa lại spacing để dữ liệu gọn gàng hơn.
+
+***Tokenization và Lemmatization***
+
+Sau bước clean text, dữ liệu sẽ được tokenize:
+
+```python
+tokens = tokenizer.tokenize(text)
+```
+
+Các từ trong câu sẽ được tách thành các token riêng biệt.
+
+Tiếp theo, mình áp dụng lemmatization:
+
+```python
+lemmatized_tokens = [
+    lemmatizer.lemmatize(token)
+    for token in tokens
+]
+```
+
+Lemmatization giúp đưa từ về dạng gốc:
+
+"studies" → "study"
+"hating" → "hate"
+
+Điều này giúp giảm số lượng feature không cần thiết nhưng vẫn giữ nguyên ý nghĩa chính của từ.
+
+
+## 7.2 Vectorization
+
+***Vì sao cần vectorization?***
+
+Sau bước preprocessing, dữ liệu vẫn đang ở dạng text. Tuy nhiên machine learning model không thể hiểu trực tiếp ngôn ngữ tự nhiên.
+
+Vì vậy cần chuyển comment sang dạng vector số trước khi đưa vào mô hình học máy.
+
+Trong bài toán này, mình sử dụng kỹ thuật TF-IDF Vectorization.
+
+<p align="center">
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/7_1_tfidf.png style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 7.1 TF-IDF</em>
+</p>
+
+**TF-IDF hoạt động như thế nào?**
+
+Ý tưởng của TF-IDF khá trực quan:
+
+Một từ xuất hiện nhiều trong một comment sẽ quan trọng hơn
+
+Nhưng nếu từ đó xuất hiện ở gần như mọi comment thì mức độ quan trọng sẽ giảm xuống
+
+Ví dụ:
+
+Các từ như:
+
+- "the"
+- "is"
+- "you"
+
+xuất hiện rất phổ biến nên không giúp phân biệt toxic hay non-toxic.
+
+Ngược lại, những từ như:
+
+- "idiot"
+- "trash"
+- "hate"
+
+thường mang nhiều tín hiệu toxic hơn nên sẽ có trọng số cao hơn.
+
+
+TF-IDF giúp mô hình tập trung vào những từ mang tính phân biệt thay vì chỉ đếm tần suất xuất hiện đơn thuần.
+
+Trong project này, mình sử dụng TfidfVectorizer như sau:
+
+```python
+vec = TfidfVectorizer(
+    ngram_range=(1,2),
+    min_df=3,
+    max_df=0.9,
+    strip_accents='unicode',
+    use_idf=True,
+    smooth_idf=True,
+    sublinear_tf=True
+)
+```
+
+Một số tham số đáng chú ý:
+
+- ngram_range=(1,2)
+Sử dụng cả unigram và bigram để model có thể học các cụm từ như "stupid idiot" thay vì chỉ từng từ riêng lẻ.
+- min_df=3
+Loại bỏ những từ xuất hiện quá ít để giảm nhiễu.
+- max_df=0.9
+Loại bỏ những từ xuất hiện quá phổ biến trong dataset.
+- sublinear_tf=True
+Giảm ảnh hưởng của những từ lặp lại quá nhiều trong cùng một comment.
+
+Chuyển dữ liệu thành vector
+
+Sau khi fit TF-IDF trên tập train:
+
+```python
+trn_term_doc = vec.fit_transform(train['clean_comment'])
+test_term_doc = vec.transform(test['clean_comment'])
+```
+
+Mỗi comment sẽ được biểu diễn thành một vector số với nhiều đặc trưng khác nhau.
+
+Đây chính là dữ liệu đầu vào cho các mô hình machine learning ở bước tiếp theo.
+
+# 7. Xây dựng mô hình
+Phần này phân tích quá trình xây dựng mô hình cơ sở (baseline model) và mô hình chính (main model). Với mô hình cơ sở, mô hình Naive Bayes cùng với TF-IDF được lựa chọn, với mô hình chính, ta sử dụng mô hình Logistic Regression.
+
+## 7.1. Naive Bayes
+Naive Bayes là một thuật toán phân lớp được mô hình hoá dựa trên định lý Bayes trong xác suất thống kê. Thuật toán giả định rằng các đặc trưng (feature) được xem là độc lập với nhau khi đã biết nhãn (label).
+
+Mô hình Naive Bayes có ưu điểm là thời gian huấn luyện (training) và dự đoán (testing) rất nhanh, đồng thời hoạt động hiệu quả ngay cả với các bộ dữ liệu lớn. Naive Bayes được sử dụng rộng rãi trong nhiều lĩnh vực như: lọc thư rác, phân tích cảm xúc, phân loại bài viết và nhiều ứng dụng khác.
+
+## 7.2. Logistic Regression
+Logistic Regression là thuật toán học máy có giám sát được dùng chủ yếu trong bài toán phân loại nhị phân có kết quả đầu ra là đúng/sai, có/không hoặc spam/không spam. Thuật toán tính toán xác xuất một điểm dữ liệu thuộc về một lớp thông qua hàm sigmoid.
+
+Sau khi tính toán xác xuất một dữ liệu thuộc về một lớp, mô hình so sánh với một ngưỡng định sẵn, nếu giá trị xác suất vượt ngưỡng cho phép, mô hình phân loại input đó là class 1, ngược lại là class 0.
+
+Trong bài toán phân loại bình luận toxic, với bản chất là phân loại đa lớp, mô hình logistic regression có thể hoạt động hiệu quả nhờ khả năng dự đoán được xác suất một bình luận thuộc về lớp nào. Tuy nhiên, để mô hình có thể phân loại một bình luận thuộc nhiều lớp khác nhau, ta cần phương pháp One vs Rest.
+
+## 7.3. One vs Rest Classifier
+One-vs-rest là phương pháp chia bài toán phân loại đa lớp thành các bài toán phân loại nhị phân, trong đó, mỗi bài toán phân loại nhị phân sẽ phân loại 1 class nhất định với tất cả class còn lại.
+
+Ví dụ: xét bài toán phân loại 3 lớp [‘đỏ‘, ‘xanh‘, ‘xanh lá‘], bằng phương pháp One vs Rest, ta sẽ đưa bài toán này thành 3 bài toán phân loại nhị phân độc lập với nhau, cụ thể:
+
+- Binary Classification 1: đỏ và [xanh, xanh lá]
+- Binary Classification 2: xanh và [đỏ, xanh lá]
+- Binary Classification 3: xanh lá và [đỏ, xanh]
+
+Khi cần phân loại một dữ liệu mới, tất cả các mô hình sẽ đưa ra điểm số (xác suất). Mô hình nào cho ra xác suất tự tin cao nhất thì nhãn của mô hình đó sẽ được chọn làm kết quả cuối cùng. Nhược điểm của phương pháp này chính là yêu cầu một mô hình được tạo cho mỗi lớp, do đó nếu bài toán có số lượng lớp khổng lồ, phương pháp này có thể làm chậm quá trình huấn luyện.
+
+## 7.4. ROC - AUC
+ROC - AUC là một thước đo quan trọng trong Machine Learning dùng để đánh giá hiệu suất của các mô hình phân loại nhị phân. Chỉ số này thể hiện khả năng phân loại chính xác của mô hình ở nhiều ngưỡng xác suất khác nhau. ROC - AUC gồm hai thành phần chính:
+
+**ROC
+(Receiver Operating Characteristic):** mô tả cách mô hình phân loại nhị phân phản ứng khi thay đổi ngưỡng phân loại. Nó so sánh hai đại lượng trên nhiều ngưỡng:
+
+- TPR (True Positive Rate): tỷ lệ phát hiện đúng lớp dương.
+- FPR (False Positive Rate): tỷ lệ mô hình dự đoán nhầm lớp âm thành dương.
+
+Khi thay đổi ngưỡng, TPR và FPR sẽ thay đổi theo, tạo thành một đường cong ROC. Đường cong không đánh giá mô hình tại một điểm cụ thể, mà nhìn vào toàn bộ hành vi khi quét qua mọi ngưỡng.
+
+## 7.5. Xây dựng mô hình
+
+### 7.5.1. Mô hình cơ sở
+Như đã đề cập ở các phần trước, ta sử dụng Naive Bayes cho mô hình cơ sở (baseline model). Với mô hình cơ sở, ta sẽ xử lí dữ liệu ở mức độ cơ bản như:
+
+- Loại bỏ các dữ liệu trống
+- Chuyển các kí tự từ chữ in hoa thành chữ thường
+- Loại bỏ các kí tự không có ý nghĩa trong văn bản (các dấu câu ngẫu nhiên, địa chỉ web)
+
+```python
+# Get dataset information and check for null values
+df_train.info()
+df_train.isnull().sum()
+```
+
+```python
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 159571 entries, 0 to 159570
+Data columns (total 9 columns):
+ #   Column         Non-Null Count   Dtype 
+---  ------         --------------   ----- 
+ 0   id             159571 non-null  object
+ 1   comment_text   159571 non-null  object
+ 2   toxic          159571 non-null  int64 
+ 3   severe_toxic   159571 non-null  int64 
+ 4   obscene        159571 non-null  int64 
+ 5   threat         159571 non-null  int64 
+ 6   insult         159571 non-null  int64 
+ 7   identity_hate  159571 non-null  int64 
+ 8   clean_text     159571 non-null  object
+dtypes: int64(6), object(3)
+```
+
+Sau khi kiểm tra, ta thấy dataset không có dữ liệu trống. Do đó ta tiến hành chuyển đổi kí tự in hoa và loại bỏ kí tự không có ý nghĩa.
+
+```python
+# Clean out https, urls, extra spaces, tabs, newlines
+def clean_text(text):
+
+    # lowercase
+    text = text.lower()
+
+    # remove urls
+    text = re.sub(r"http\S+|www\S+", "", text)
+
+    # remove extra spaces/newlines/tabs
+    text = re.sub(r"\s+", " ", text).strip()
+
+    return text
+
+# Apply cleaning
+df_train['clean_text'] = df_train['comment_text'].apply(clean_text)
+```
+
+Sau khi clean text, ta tiến hành phân chia dữ liệu training và validation. Bên cạnh đó, dữ liệu cũng được mã hóa bằng TF-IDF với các thông số:
+
+- stop_words='english'
+- ngram_range=(1,2)
+- min_df=3
+- max_df=0.9
+
+```python
+# Train, test split
+from sklearn.model_selection import train_test_split
+
+X = df_train['clean_text']
+y = df_train[label_cols]
+
+X_train, X_valid, y_train, y_valid = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
+
+# Initialize TF-IDF
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+word_vectorizer  = TfidfVectorizer(
+    lowercase=True,
+    stop_words='english',
+    ngram_range=(1,2),
+    min_df=3,
+    max_df=0.9,
+    sublinear_tf=True
+)
+
+# Fit
+X_train_word = word_vectorizer.fit_transform(X_train)
+X_valid_word = word_vectorizer.transform(X_valid)
+```
+
+Bộ dữ liệu Jigsaw thuộc dữ liệu đa nhãn, mỗi bình luận đều có thể thuộc nhiều nhãn khác nhau (vừa toxic, vừa insult) do đó ta huấn luyện mô hình cho từng nhãn ở mỗi vòng lặp. Tại bước này, mô hình ComplementNB được sử dụng.
+
+```python
+import pandas as pd
+from sklearn.naive_bayes import ComplementNB
+from sklearn.metrics import classification_report, f1_score
+
+results = []
+
+models = {}
+
+for label in label_cols:
+
+    print(f"\nTraining model for: {label}")
+
+    # Current label
+    y_train_label = y_train[label]
+    y_valid_label = y_valid[label]
+
+    # Model
+    model = ComplementNB(alpha=0.5)
+
+    # Train
+    model.fit(X_train_word, y_train_label)
+
+    # Predict
+    y_pred = model.predict(X_valid_word)
+
+    # Classification report as dictionary
+    report = classification_report(
+        y_valid_label,
+        y_pred,
+        output_dict=True
+    )
+
+    # Extract metrics for positive class (class 1)
+    precision = report['1']['precision']
+    recall = report['1']['recall']
+    f1 = report['1']['f1-score']
+    support = report['1']['support']
+    accuracy = report['accuracy']
+
+    # Save results
+    results.append({
+        'label': label,
+        'precision': precision,
+        'recall': recall,
+        'f1_score': f1,
+        'accuracy': accuracy,
+        'support': support
+    })
+
+    # Save model
+    models[label] = model
+
+results_df = pd.DataFrame(results)
+results_df = results_df.round(4)
+
+results_df
+```
+Sau quá trình huấn luyện, ta thu được bảng kết quả:
+
+|  | label | precision | recall | f1_score | accuracy | support |
+| :---------: | :-------: | :--------: | :--------: | :--------: | :--------: | :--------: |
+| 0 | toxic        | 0.7015 | 0.6643 | 0.6824 | 0.9408 | 3056.0 |
+| 1 | severe_toxic | 0.3384 | 0.4143 | 0.3725 | 0.9860 | 321.0 |
+| 2 | obscene      | 0.6691 | 0.6507 | 0.6598 | 0.9639 | 1715.0 |
+| 3 | threat       | 0.1100 | 0.1486 | 0.1264 | 0.9952 | 74.0 |
+| 4 | insult       | 0.5985 | 0.5818 | 0.5900 | 0.9591 | 1614.0 |
+| 5 | identity_hate| 0.2550 | 0.2177 | 0.2349 | 0.9869 | 294.0 |
+
+**Nhận xét về bảng kết quả:**
+
+Với nhãn toxic:
+
+- Có số lượng samples lớn nhất, với precision = 0.70, recall = 0.66, f1 = 0.68
+- Khi dự đoán bình luận là toxic, có 70% bình luận thật sự là toxic, 66% bình luận được dự đoán là toxic.
+- Tuy nhiên, f1-score thấp cho thấy vẫn còn nhiều bình luận toxic chưa được dự đoán đúng.  
+
+
+Với nhãn obsence:
+
+- Đây là nhãn có số lượng samples cao thứ nhì, với precision = 0.66, recall = 0.65, f1 = 0.65
+- Với nhãn obsence, các từ ngữ mang tính thô tục có xu hướng xuất hiện nhiều và riêng lẻ, dễ phân biệt, do đó mô hình đưa ra các chỉ số tương đối tốt
+- Tuy nhiên, f1-score chưa cao cho thấy mô hình dự đoán chưa tốt cho nhãn obsence, một số từ ngữ tục tĩu được viết dưới định dạng đặc biệt như "f*ck", "f u c k", "fuuuuuck", "f#ck" gây khó khăn cho quá trình mã hóa dữ liệu. Do đó, ta cần xử lí tốt hơn ở phần này cho mô hình chính.
+
+Với nhãn Insult:
+
+- Số lượng samples cao thứ ba, precision = 0.59, recall = 0.58, f1 = 0.59
+- Vì tính chất của insult là dựa vào ngữ cảnh (ví dụ: "you are clueless"), do đó rất khó để xác định một bình luận thật sự có ý xúc phạm hay không. Do đó ta cần xử lí tốt hơn để mô hình có thể hiểu được ngữ cảnh.
+
+
+Với nhãn severe_toxic, identity_hate, threat:
+
+- Các nhãn này đều có số lượng samples thấp, ảnh hưởng trực tiếp đến chỉ số precision, recall, f1-score.
+- Với bản chất là bộ dữ liệu mất cân bằng giữa các class, đây là hiện tượng không thể tránh khỏi.
+
+Điểm chung giữa các nhãn cho thấy accuracy đều rất cao, dao động từ 0.94 đến 0.98. Tuy nhiên ở bài toán này, ta không thể dựa vào accuracy:
+
+- Bộ dữ liệu có tính mất cân bằng lớn, phần lớn bình luận đều là non-toxic, khi đó chỉ số accuracy cao (ví dụ: 0.97) chỉ phản ánh rằng mô hình dự đoán hầu hết các bình luận là non-toxic, nhưng không thể dự đoán được bình luận mang tình chất toxic nào.
+- Để việc đánh giá mô hình hiệu quả hơn, ta nên sử dụng các metric khác như precision, recall, f1-score, ROC AUC
+
+### 7.5.2. Mô hình chính
+Như đã đề cập ở phần trước, để huấn luyện một mô hình có kết quả tốt hơn, ta tiến hành tiền xử lí dữ liệu và sử dụng Logistic Regression.
+
+```python
+import nltk
+from nltk.tokenize import TweetTokenizer
+from nltk.corpus import stopwords
+COMMENT = 'comment_text'
+train["comment_text"].fillna("unknown", inplace=True)
+test["comment_text"].fillna("unknown", inplace=True)
+
+tokenizer=TweetTokenizer()
+
+nltk.download('stopwords')
+nltk.download('wordnet')
+
+eng_stopwords = set(stopwords.words("english"))
+```
+
+Để cải thiện dữ liệu so với baseline model, ta sử dụng thêm thư viện hỗ trợ như nltk (một thư viện để xử lí ngôn ngữ tự nhiên):
+
+- Package stopwords dùng để loại bỏ các từ dừng như "a, an, the" vì các từ này thường mang không nhiều ý nghĩa cho phần phân loại.
+- Pacakge WordNet là một cơ sở dữ liệu từ vựng khổng lồ của tiếng Anh được phát triển bởi Đại học Princeton. Ta sẽ sử dụng thuật toán Lemmatizer của WordNet để đưa các biến thể của một từ về dạng gốc của nó (ví dụ: running -> run). Qúa trình này đảm bảo mô hình xem các biến thể của một từ là đối tượng duy nhất mà không phải là các từ độc lập.
+- TweetTokenizer là công cụ tokenizer đặc biệt dùng cho dữ liệu thuộc lĩnh vực social media. Bộ dữ liệu Jigsaw bao gồm các bình luận từ wikipedia, do đó việc sử dụng TweetTokenizer góp phần tối ưu giai đoạn xử lí ngôn ngữ.
+
+Ở bước xử lí dữ liệu, ta tiến hành: 
+- Tách các từ viết tắt thành từ đầy đủ trước khi đưa vào bộ tokenizer.
+- Chuyển đổi các từ dạng viết hoa thành viết thường.
+- Loại bỏ các dấu câu không liên quan, tên miền web. 
+
+```python
+APPO = {
+"aren't" : "are not",
+"can't" : "cannot",
+"couldn't" : "could not",
+"didn't" : "did not",
+"doesn't" : "does not",
+"don't" : "do not",
+"hadn't" : "had not",
+"hasn't" : "has not",
+"haven't" : "have not",
+"he'd" : "he would",
+"he'll" : "he will",
+"he's" : "he is",
+"i'd" : "I would",
+"i'd" : "I had",
+"i'll" : "I will",
+"i'm" : "I am",
+"isn't" : "is not",
+"it's" : "it is",
+"it'll":"it will",
+"i've" : "I have",
+"let's" : "let us",
+"mightn't" : "might not",
+"mustn't" : "must not",
+"shan't" : "shall not",
+"she'd" : "she would",
+"she'll" : "she will",
+"she's" : "she is",
+"shouldn't" : "should not",
+"that's" : "that is",
+"there's" : "there is",
+"they'd" : "they would",
+"they'll" : "they will",
+"they're" : "they are",
+"they've" : "they have",
+"we'd" : "we would",
+"we're" : "we are",
+"weren't" : "were not",
+"we've" : "we have",
+"what'll" : "what will",
+"what're" : "what are",
+"what's" : "what is",
+"what've" : "what have",
+"where's" : "where is",
+"who'd" : "who would",
+"who'll" : "who will",
+"who're" : "who are",
+"who's" : "who is",
+"who've" : "who have",
+"won't" : "will not",
+"wouldn't" : "would not",
+"you'd" : "you would",
+"you'll" : "you will",
+"you're" : "you are",
+"you've" : "you have",
+"'re": " are",
+"wasn't": "was not",
+"we'll":" will",
+"didn't": "did not",
+"tryin'":"trying"
+}
+```
+
+```python
+import re
+from nltk.stem.wordnet import WordNetLemmatizer
+
+lem = WordNetLemmatizer()
+
+def clean(comment):
+    """
+    This function receives comments and returns clean word-list
+    """
+    #Convert to lower case , so that Hi and hi are the same
+    comment=comment.lower()
+    # remove \n
+    comment=re.sub("\\n"," ",comment)
+    # remove leaky elements like ip,user
+    comment=re.sub("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"," ",comment)
+    #removing usernames
+    comment=re.sub("\[\[.*\]"," ",comment)
+
+    #Split the sentences into words
+    words=tokenizer.tokenize(comment)
+    # (')aphostophe  replacement (ie)   you're --> you are
+    # ( basic dictionary lookup : master dictionary present in a hidden block of code)
+    words=[APPO[word] if word in APPO else word for word in words]
+    words=[lem.lemmatize(word, "v") for word in words]
+    words = [w for w in words if not w in eng_stopwords]
+
+    clean_sent=" ".join(words)
+
+    return(clean_sent)
+
+# Apply cleaning process to the train set
+train['clean_comment'] = train['comment_text'].apply(clean)
+test['clean_comment'] = test['comment_text'].apply(clean)
+```
+
+Sau quá trình xử lí dữ liệu, ta biến đổi dữ liệu thông qua véc tơ hóa. Hàm TfidfVectorizer với các tham số:
+- ngram_range=(1,2): Trích xuất từ đơn và cụm hai từ trong văn bản. Việc trích xuất 2 từ giúp phân tích ý nghĩa rõ hơn (ví dụ: "you idiot" sẽ mang hàm ý chỉ trích hơn so với "you" và "idiot" riêng lẻ)
+- min_df=3: Được hiểu như tần số xuất hiện của token, các token xuất hiện từ dưới ba lần sẽ được bỏ qua, điều này giúp giảm nhiễu như các từ sai chính tả, từ rác xuất hiện trong văn bản.
+- max_df=0.9: Loại bỏ các token xuất hiện nhiều hơn 90%, các token này thường là các từ lặp như "the", "is", "you".
+- strip_accents='unicode': Chuẩn hóa các từ về chuẩn unicode.
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+n = train.shape[0]
+vec = TfidfVectorizer(ngram_range=(1,2), 
+                      min_df=3, 
+                      max_df=0.9, 
+                      strip_accents='unicode', 
+                      use_idf=True,
+                      smooth_idf=True, 
+                      sublinear_tf=True 
+                      )
+trn_term_doc = vec.fit_transform(train['clean_comment'])
+test_term_doc = vec.transform(test['clean_comment'])
+```
+
+Ta huấn luyện mô hình với input đã chuẩn hóa ở bước trước. Với mô hình chính thức, ta sử dụng mô hình Logistic Regression kết hợp với phương pháp nâng trọng số cho các đặc trưng từ TF-IDF.
+
+Naive Bayes weighting là phương pháp nâng trọng số cho các đặc trưng từ TF-IDF. Bằng việc đặt thêm trọng số cho các đặc trưng từ TF-IDF, các từ có xu hướng độc hại sẽ được nhấn mạnh hơn, điều này giúp cải thiện hiệu suất phân loại cho mô hình. Phương pháp này được biểu diễn thông qua hàm sau:
+
+```python
+from sklearn.linear_model import LogisticRegression
+
+def pr(y_i, y):
+    p = x[y==y_i].sum(0)
+    return (p+1) / ((y==y_i).sum()+1)
+
+def get_mdl(y):
+    y = y.values
+    r = np.log(pr(1,y) / pr(0,y))
+    m = LogisticRegression(C=4, dual=False)
+    x_nb = x.multiply(r)
+    return m.fit(x_nb, y), r
+```
+
+**Ý tưởng của thuật toán:**
+```python
+p = x[y==y_i].sum(0)
+```
+- Xét một lớp bất kì (ví dụ: lớp toxic y_i==1), tính tần số xuất hiện (.sum(0)) của các bình luận mang tính toxic (x[y==y_i]). Ta thu được tần số xuất hiện của một từ trong các bình luận toxic: "stupid" -	high, "idiot" -	high, "nice" -	low.
+- Ta cộng 1 cho tử và mẫu để tránh trường hợp không xác định (kết quả trả về là một phân số có mẫu số là 0 và log(0))
+
+```python
+r = np.log(pr(1,y) / pr(0,y))
+```
+- Log-count ratio (hay Naive Bayes log-count ratio): tỷ lệ giữa tần suất xuất hiện của một từ trong một nhóm so với nhóm khác, sau đó được đưa qua hàm logarit. Thuật toán định lượng mức độ quan trọng của từ đối với từng phân lớp. Thuật toán chỉ ra "Từ đang xét mang ý toxic hay non-toxic nhiều hơn?".
+- Ví dụ: từ "idiot" có tần số xuất hiện là 500, từ "nice" có tần số xuất hiện là 10, khi đó log(50) là số dương, nhận định rằng từ đó mang nghĩa toxic. Ngược lại, nếu tần số xuất hiện của "nice" là 1000, tần số của "idiot" là 5, từ "nice", kết quả trả về log(0.005) là số âm, nhận định rằng từ đó mang nghĩa non-toxic.
+- Việc áp dụng véc tơ trọng số giúp ta có thể tạo ra các đặc trưng mạnh hơn, từ đó hỗ trợ quá trình phân loại của mô hình.
+
+Ta tiến hành huấn luyện mô hình với từng nhãn cụ thể:
+
+```python 
+x = trn_term_doc
+test_x = test_term_doc
+
+label_cols = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
+preds = np.zeros((len(test), len(label_cols)))
+
+for i, j in enumerate(label_cols):
+    print('fit', j)
+    m,r = get_mdl(train[j])
+    preds[:,i] = m.predict_proba(test_x.multiply(r))[:,1]
+```
+
+Sau khi huấn luyện, ta lưu file train để tiến hành dự đoán:
+
+```python
+submid = pd.DataFrame({'id': subm["id"]})
+submission = pd.concat([submid, pd.DataFrame(preds, columns = label_cols)], axis=1)
+submission.to_csv('submission1.csv', index=False)
+
+import pandas as pd
+import numpy as np
+from sklearn.metrics import f1_score, roc_auc_score
+
+# 1. Read prediction file and test file
+sub = pd.read_csv('submission1.csv')
+# labels = pd.read_csv('/content/drive/MyDrive/AIO_WarmUp3_Conquer/test.csv/test.csv')
+labels = y_test # Use y_test which contains the true labels
+
+label_cols = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
+
+# 2. Filter out class with label == -1
+mask = labels['toxic'] != -1
+y_true_df = labels[mask]
+y_pred_df = sub[mask]
+
+# Lấy values (ma trận numpy) để tính toán
+y_true = y_true_df[label_cols].values
+y_pred_probs = y_pred_df[label_cols].values
+
+# 3. Transform probability to binary value for F1-score
+threshold = 0.5
+y_pred_binary = (y_pred_probs > threshold).astype(int)
+
+# 4. Calculate F1 Score and print result
+print("=== F1 SCORE (Threshold = 0.5) ===")
+f1_scores = []
+for i, col in enumerate(label_cols):
+    score = f1_score(y_true[:, i], y_pred_binary[:, i])
+    f1_scores.append(score)
+    print(f"{col:<15}: {score:.4f}")
+
+macro_f1 = np.mean(f1_scores)
+print("-" * 25)
+print(f"Macro F1 Score : {macro_f1:.4f}\n")
+```
+Với hướng tiếp cận mới, ta có thể thấy mô hình cho ra kết quả tốt hơn so với mô hình cơ sở: 
+
+| Label          | F1 score (Baseline model) | F1 score (Main model) |
+| :------:       | :------: | :------: |
+| toxic          | 0.6824	  | 0.6804   |
+| severe_toxic   | 0.3725   | 0.3707   |
+| obscene        | 0.6598   | 0.6864   |
+| threat         | 0.1264   | 0.3167   |
+| insult         | 0.5900   | 0.6204   |
+| identity_hate  | 0.2349   | 0.4720   |
+| Macro F1 score | 0.4443   | 0.5244   |
+
+Với các nhãn ít dữ liệu như threat và identity_hate, kết quả có sự cải thiện đáng kể, điều đó cho thấy bước xử lí dữ liệu đạt hiệu quả tốt. Ngoài ra, Macro F1 score cũng được cải thiện. Ta tiến hành tính chỉ số ROC - AUC:
+```python
+print("=== ROC AUC Evaluation ===")
+auc_scores = []
+for i, col in enumerate(label_cols):
+    score = roc_auc_score(y_true[:, i], y_pred_probs[:, i])
+    auc_scores.append(score)
+    print(f"{col:<15}: {score:.4f}")
+
+mean_auc = np.mean(auc_scores)
+print("-" * 25)
+print(f"Mean ROC AUC   : {mean_auc:.4f}")
+```
+```python
+=== ROC AUC Evaluation ===
+toxic          : 0.9646
+severe_toxic   : 0.9829
+obscene        : 0.9744
+threat         : 0.9854
+insult         : 0.9666
+identity_hate  : 0.9753
+-------------------------
+Mean ROC AUC   : 0.9749
+```
+
+Điểm ROC - AUC cho các nhãn đều tiệm cận 1, Mean ROC AUC là 0.9749, điều đó cho thấy mô hình hiện tại có khả năng phân loại tốt các nhãn.
+
+Từ kết quả training ta có thể kết luận rằng, thông qua bước xử lí dữ liệu tổng thể và chi tiết:
+- Chuẩn hóa kí tự, chuyển đổi các từ về dạng viết thường
+- Mở rộng các dạng rút gọn của ngôn ngữ tiếng Anh
+- Loại bỏ kí tự nhiễu, các tên miền và địa chỉ web
+
+Cùng với việc sử dụng thuật toán Naive Bayes weighting để tăng trọng số cho các token theo nhãn trước khi huấn luyện với mô hình Logistic Regression, ta đạt được kết quả tốt hơn so với mô hình cơ sở với mean ROC AUC là **0.9749**, điều đó phản ánh khả năng phân loại nhãn của mô hình ở mức tốt, có thể phân loại bình luận thuộc các nhãn khác nhau.
+
 # Phần 11: Hạn chế của AI và Vấn đề Đạo đức
 
 Mặc dù ToxiGuard AI cho thấy kết quả khả quan trong việc phân loại bình luận, chúng ta cần nhìn nhận thực tế rằng không có mô hình học máy nào là hoàn hảo. Khi áp dụng AI vào việc kiểm duyệt nội dung, đặc biệt là trong môi trường giáo dục, có những hạn chế và vấn đề đạo đức quan trọng cần được xem xét kỹ lưỡng:
@@ -207,6 +904,7 @@ Dự án ToxiGuard AI đã chứng minh khả năng áp dụng các kỹ thuật
 - **Hệ thống phản hồi từ người dùng (Human Feedback):** Xây dựng cơ chế cho phép người quản trị sửa lỗi dự đoán của AI. Mô hình sẽ liên tục học hỏi từ những sửa đổi này (Active Learning) để ngày càng chính xác hơn.
 - **Tích hợp trực tiếp vào Hệ thống Quản lý Học tập (LMS):** Phát triển API hoặc Plugin để cắm trực tiếp ToxiGuard AI vào các nền tảng học trực tuyến như Moodle, Canvas, hay các diễn đàn học tập, tự động quét và cảnh báo bình luận theo thời gian thực.
 
+Mọi người có thể thử trực tiếp mô hình Toxic Comment Detection thông qua bản demo tại [Hugging Face](https://huggingface.co/spaces/cauhamau/toxic-comment-classifier).
 # Tài Liệu Tham Khảo
 
 Jigsaw Toxic Comment Classification Challenge
@@ -220,3 +918,5 @@ Kaggle. (2018). Jigsaw Toxic Comment Classification Challenge. https://www.kaggl
 Jurafsky, D., & Martin, J. H. (2023). Speech and Language Processing (3rd ed. draft). Stanford University. https://web.stanford.edu/~jurafsky/slp3/
 
 Schmidt, A., & Wiegand, M. (2017). A survey on hate speech detection using natural language processing. Proceedings of the Fifth International Workshop on Natural Language Processing for Social Media, 1–10.
+
+Wang, S., & Manning, C. D. (2012). Baselines and Bigrams: Simple, Good Sentiment and Topic Classification. Stanford University. Retrieved from https://nlp.stanford.edu/pubs/sidaw12_simple_sentiment.pdf
