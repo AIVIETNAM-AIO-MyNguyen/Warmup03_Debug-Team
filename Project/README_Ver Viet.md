@@ -62,8 +62,8 @@ Sau khi hiểu rõ cấu trúc lý thuyết, bước tiếp theo không thể th
 ## 4.1. Tỷ lệ bình luận độc hại và lành mạnh
 
 <p align="center">
-  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_1_toxic_vs_nontoxic.png style="margin: 0 auto; display: block;"><br/>
-  <em>Hình 5.1. Tỷ lệ bình luận độc hại và lành mạnh</em>
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/4_1_toxic_vs_nontoxic.png style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 4.1. Tỷ lệ bình luận độc hại và lành mạnh</em>
 </p>
 
 Biểu đồ đầu tiên phản ánh bức tranh toàn cảnh về sự cân bằng của tập dữ liệu thông qua tỷ lệ giữa bình luận độc hại (toxic) và bình luận lành mạnh (non-toxic). Kết quả trực quan hóa cho thấy một sự chênh lệch cực kỳ lớn khi nhóm bình luận lành mạnh chiếm đến khoảng 90% tổng số dữ liệu, trong khi nhóm chứa yếu tố độc hại chỉ chiếm khoảng 10%.
@@ -73,8 +73,8 @@ Sự mất cân bằng nghiêm trọng này là một đặc tính thực tế c
 ## 4.2. Sự phân bố của sáu nhãn tiêu cực
 
 <p align="center">
-  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_2_label_distribution.png style="margin: 0 auto; display: block;"><br/>
-  <em>Hình 5.2. Tần suất xuất hiện của 6 nhãn độc hại</em>
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/4_2_label_distribution.png style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 4.2. Tần suất xuất hiện của 6 nhãn độc hại</em>
 </p>
 
 Đi sâu hơn vào 10% bình luận tiêu cực, biểu đồ cột phân bố sáu nhãn sẽ bóc tách chi tiết tần suất xuất hiện của từng loại hành vi thù ghét. Nhãn `toxic` có số lượng vượt trội hoàn toàn so với năm nhãn còn lại, tiếp theo là nhãn `insult` (xúc phạm) và `obscene` (tục tĩu) với số lượng khá tương đồng nhau. Ngược lại, ba nhãn bao gồm `severe_toxic`, `identity_hate`, và `threat` có tần suất xuất hiện cực kỳ thấp, tạo thành các nhóm dữ liệu thiểu số trong tập dữ liệu.
@@ -84,8 +84,8 @@ Sự phân bố không đồng đều này chỉ ra rằng phần lớn hành vi
 ## 4.3. Đặc điểm độ dài của các bình luận
 
 <p align="center">
-  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_3_comment_length_distribution.png style="margin: 0 auto; display: block;"><br/>
-  <em>Hình 5.3. Phân phối độ dài bình luận (Giới hạn dưới 400 từ)</em>
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/4_3_comment_length_distribution.png style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 4.3. Phân phối độ dài bình luận (Giới hạn dưới 400 từ)</em>
 </p>
 
 Biểu đồ phân phối mật độ (Histogram) về độ dài ký tự và số lượng từ trong mỗi bình luận mang lại những góc nhìn kỹ thuật quan trọng. Hầu hết các bình luận tập trung dày đặc ở phân khúc ngắn, dao động từ vài chục đến dưới hai trăm từ. Tuy nhiên, biểu đồ cũng xuất hiện một chiếc "đuôi dài" kéo về phía bên phải, đại diện cho những bài viết có độ dài đột biến.
@@ -95,8 +95,8 @@ Biểu đồ phân phối mật độ (Histogram) về độ dài ký tự và s
 ## 4.4. Mối quan hệ tương quan giữa các nhãn
 
 <p align="center">
-  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_4_labels_correlation_heatmap.png style="margin: 0 auto; display: block;"><br/>
-  <em>Hình 5.4. Biểu đồ ma trận tương quan giữa 6 nhãn độc hại</em>
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/4_4_labels_correlation_heatmap.png style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 4.4. Biểu đồ ma trận tương quan giữa 6 nhãn độc hại</em>
 </p>
 
 Biểu đồ ma trận nhiệt (Heatmap) thể hiện hệ số tương quan Pearson giữa sáu nhãn độc hại mang lại cái nhìn sâu sắc về hành vi ngôn từ. Chỉ số tương quan mạnh nhất xuất hiện giữa hai cặp nhãn: `toxic` với `insult`, và `obscene` với `insult`. Ngược lại, nhãn threat hầu như không có sự tương quan đáng kể nào với các nhãn khác, đứng hoàn toàn độc lập trong ma trận.
@@ -119,8 +119,8 @@ Việc nhận diện và loại bỏ chúng có thể sẽ giúp mô hình trán
 - **HTML tag:** các thẻ định dạng sử dụng HTML, không có giá trị cảm xúc
 
 <p align="center">
-  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/5_5_noise_information_distribution.png style="margin: 0 auto; display: block;"><br/>
-  <em>Hình 5.5. Biểu đồ tần suất xuất hiện của các thông tin nhiễu</em>
+  <img src=https://github.com/AIVIETNAM-AIO-MyNguyen/Warmup03_Debug-Team/blob/main/Collection/4_5_noise_information_distribution.png style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 4.5. Biểu đồ tần suất xuất hiện của các thông tin nhiễu</em>
 </p>
 
 # 6. Pipeline tổng thể của hệ thống ToxiGuard AI
