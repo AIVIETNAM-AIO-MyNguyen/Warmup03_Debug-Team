@@ -197,10 +197,8 @@ Hai bước này giúp chuyển đổi dữ liệu từ ngôn ngữ tự nhiên 
 
 Dữ liệu comment trên internet thường không đồng nhất và chứa khá nhiều nhiễu. Người dùng có thể:
 
-- Viết hoa toàn bộ câu
 - Spam ký tự hoặc lặp chữ liên tục
 - Chèn username, link hoặc địa chỉ IP
-- Dùng từ viết tắt như "you're", "can't"
 - Viết sai chính tả hoặc không đúng ngữ pháp
 
 Những yếu tố này khiến dữ liệu trở nên khó xử lý hơn đối với mô hình machine learning. Nếu giữ nguyên dữ liệu gốc, model rất dễ học phải các pattern không thực sự mang ý nghĩa, từ đó làm giảm khả năng tổng quát hóa trên dữ liệu mới.
