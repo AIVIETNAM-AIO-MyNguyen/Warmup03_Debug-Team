@@ -874,6 +874,53 @@ From the training results, it can be concluded that comprehensive preprocessing 
 
 Combined with Naive Bayes weighting to strengthen token importance before training Logistic Regression, the proposed approach achieved substantially better results than the baseline model. This demonstrates that the model can effectively classify comments into multiple toxic categories. However, due to the highly imbalanced nature of the dataset, the model still cannot achieve optimal performance across all labels. In addition, labels that heavily depend on conversational context remain difficult to classify accurately. This limitation should be considered for future improvements.
 
+## 8. Limitations of AI and Ethical Concerns
+
+Although ToxiGuard AI has shown promising results in classifying comments, it is important to recognize that no machine learning model is perfect. When applying AI to content moderation, especially in educational environments, there are several important limitations and ethical concerns that must be carefully considered:
+
+* **Limited understanding of deeper context:**
+  The current model mainly analyzes vocabulary and sentence structure through TF-IDF features. It still struggles to fully understand the context of a conversation. A word that may be offensive in one situation could simply be friendly slang or a joke between friends in another.
+
+* **Bias issues:**
+  AI models learn from the data they are trained on. If the training dataset (such as the Jigsaw dataset) contains hidden biases — for example, frequently labeling comments containing certain keywords associated with minority groups as “toxic” — the model may unintentionally learn and repeat those biases, leading to unfair moderation decisions.
+
+* **Difficulty detecting sarcasm:**
+  Identifying sarcasm and irony remains one of the biggest challenges in Natural Language Processing (NLP). Comments written in polite language but carrying harmful or sarcastic meanings can easily bypass the system.
+
+* **The importance of Human-in-the-loop moderation:**
+  Because of these limitations, an important principle in AI ethics is that comments should never be automatically deleted based solely on algorithmic predictions. ToxiGuard AI is designed as an assisting tool that flags potentially harmful comments and warns moderators about possible risks, helping teachers or administrators save time when filtering content. Final decisions regarding hiding, deleting, or warning users should still involve human judgment to ensure fairness and respect for freedom of expression.
+
+## 9. Conclusion and Future Development
+
+The ToxiGuard AI project demonstrates how Natural Language Processing (NLP) and basic Machine Learning techniques can be applied to solve a complex problem: multi-label toxic comment classification. From data cleaning and feature extraction using TF-IDF to building a Logistic Regression model with the One-vs-Rest strategy, the project successfully creates a solid and effective foundation system.
+
+#### Project Contributions:
+
+* **Academic value:**
+  The project provides a complete end-to-end workflow for text classification tasks, helping learners better understand text preprocessing, model selection, and evaluation metrics.
+
+* **Practical value:**
+  ToxiGuard AI shows strong potential for real-world applications in maintaining healthy online learning environments, creating a safer and more respectful space where learners can freely exchange knowledge without fear of cyberbullying or toxic behavior.
+
+#### Future Development Directions:
+
+To make ToxiGuard AI more powerful and practical, the following future improvements are proposed:
+
+* **Vietnamese language support:**
+  The most important next step is collecting and building a Vietnamese toxic comment dataset to train models that can be directly applied to online learning communities in Vietnam.
+
+* **Applying advanced Deep Learning models:**
+  Moving from traditional machine learning models like Logistic Regression to more advanced language models such as BERT (or PhoBERT for Vietnamese) could significantly improve contextual understanding and sarcasm detection.
+
+* **Human feedback system:**
+  Building a mechanism that allows moderators to correct AI predictions. The system can continuously learn from these corrections through Active Learning, gradually improving its accuracy over time.
+
+* **Direct integration into Learning Management Systems (LMS):**
+  Developing APIs or plugins to integrate ToxiGuard AI directly into online learning platforms such as Moodle, Canvas, or discussion forums, enabling real-time comment scanning and moderation alerts.
+
+Users can also try the Toxic Comment Detection demo directly on [Hugging Face](https://huggingface.co/spaces/cauhamau/toxic-comment-classifier?utm_source=chatgpt.com).
+
+
 # REFERENCES
 
 Jigsaw Toxic Comment Classification Challenge
