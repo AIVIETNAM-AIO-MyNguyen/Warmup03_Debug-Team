@@ -69,7 +69,7 @@ Figure 4.1. Proportion of harmful and wholesome comments
 
 The first graph reflects the overall balance of the dataset through the ratio between toxic and non-toxic comments. The visualization shows an extremely large disparity, with the group of non-toxic comments accounting for approximately 90% of the total data, while the group containing toxic elements only accounts for about 10%.
 
-This severe imbalance is a real characteristic of social networks but poses a significant challenge for AI. If this ratio is maintained during training, the model will tend to assume all comments are healthy, theoretically achieving high accuracy. Therefore, we are forced to apply data balancing techniques such as resampling or adjusting the loss weight during training.
+This severe imbalance is a real characteristic of social networks but poses a significant challenge for AI. If this ratio is maintained during training, the model will tend to assume all comments are healthy, theoretically achieving high accuracy. This is a crucial insight that helps us shape our model-building strategy and select the right evaluation metrics for the next steps.
 
 ## 4.2. Distribution of the Six Negative Labels
 
@@ -91,8 +91,6 @@ This uneven distribution indicates that the majority of online violations stop a
 
 The histogram showing character length and word count in each comment provides important technical insights. Most comments are densely concentrated in the short segment, ranging from a few dozen to under two hundred words. However, the histogram also shows a "long tail" to the right, representing posts with unusually long lengths.
 
-This characteristic directly affects the configuration of the `max_length` parameter when tokenizing text. If the limit is too short, the model will omit important context from longer articles. If the limit is too long, the system will waste computational resources processing meaningless spaces (padding tokens) in short comments, slowing down the response speed of the real-time moderation application.
-
 ## 4.4. Correlation between labels
 
 <p align="center">
@@ -101,8 +99,6 @@ Figure 4.4. Correlation matrix diagram between 6 toxic labels.
 </p>
 
 The Heatmap plot shows the Pearson correlation coefficients between the six toxic labels, providing insight into verbal behavior. The strongest correlations appear between two pairs of labels: `toxic` with `insult`, and `obscene` with `insult`. Conversely, the threat label shows almost no significant correlation with the other labels, standing completely independent in the matrix.
-
-This organic correlation demonstrates that when someone uses obscene language, there is a very high probability that they are intending to insult someone. Technically, the high correlation between labels reinforces the decision to use a multi-label classification model, allowing a comment to trigger multiple labels simultaneously instead of forcing the model to select a single label.
 
 ## 4.5. Noise Information
 
