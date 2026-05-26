@@ -919,10 +919,6 @@ Users can also try the Toxic Comment Detection demo directly on [Hugging Face](h
 
 # REFERENCES
 
-Jigsaw Toxic Comment Classification Challenge
-
-Natural Language Processing Specialization – DeepLearning.AI
-
 DeepLearning.AI. (n.d.). Natural Language Processing Specialization. Coursera. https://www.deeplearning.ai/courses/natural-language-processing-specialization/
 
 Kaggle. (2018). Jigsaw Toxic Comment Classification Challenge. https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge
