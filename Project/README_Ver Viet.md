@@ -863,10 +863,6 @@ Dự án ToxiGuard AI đã chứng minh khả năng áp dụng các kỹ thuật
 Mọi người có thể thử trực tiếp mô hình Toxic Comment Detection thông qua bản demo tại [Hugging Face](https://huggingface.co/spaces/cauhamau/toxic-comment-classifier).
 # Tài Liệu Tham Khảo
 
-Jigsaw Toxic Comment Classification Challenge
-
-Natural Language Processing Specialization – DeepLearning.AI
-
 DeepLearning.AI. (n.d.). Natural Language Processing Specialization. Coursera. https://www.deeplearning.ai/courses/natural-language-processing-specialization/
 
 Kaggle. (2018). Jigsaw Toxic Comment Classification Challenge. https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge
